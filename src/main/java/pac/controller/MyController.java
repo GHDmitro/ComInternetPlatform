@@ -216,12 +216,13 @@ public class MyController {
         positionOfPrice = new PositionOfPrice(bookingCondition, deliveryCondition,
                 new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), cost, account, product);
         positionOfPriceService.addPositionOfPrice(positionOfPrice);
-//        account.addPricePositions(positionOfPrice);   /////// проверить будет ли оно правильно работать добавле поз после ее создания
+        account.addPricePositions(positionOfPrice);   /////// проверить будет ли оно правильно работать добавле поз после ее создания
         System.out.println("-----------------");
 
         accountService.updateAccount(account);
 
-        List<PositionOfPrice> listPosition = accountService.listPositions(account);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        List<PositionOfPrice> listPosition = accountService.listPositions(account);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        List<PositionOfPrice> listPosition = account.getPricePositions();
         if (listPosition != null) {
             System.out.println(listPosition.get(0).getProduct().getName() + "     если есть то в контроллере позиция ");
         }else {
