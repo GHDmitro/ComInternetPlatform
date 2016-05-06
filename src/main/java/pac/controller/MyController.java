@@ -1,48 +1,107 @@
 package pac.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import pac.entities.Account;
 import pac.entities.AccountType;
+import pac.entities.PositionOfPrice;
+import pac.entities.Product;
+import pac.errors.PhotoNotFoundException;
 import pac.errors.TypeIsNotFound;
 import pac.services.AccountService;
 import pac.services.AccountTypeService;
+import pac.services.PositionOfPriceService;
+import pac.services.ProductService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class MyController {
-    static final int DEFAULT_GROUP_ID = -1;
+//    static final int DEFAULT_GROUP_ID = -1;
 
     @Autowired
     private AccountService accountService;
-
     @Autowired
     private AccountTypeService accountTypeService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private PositionOfPriceService positionOfPriceService;
+
 //    private ContactService contactService;
 
     @RequestMapping("/")
-    public String rootPage(Model model) {
+    public String rootPage(Model model, HttpServletRequest request) {
+//        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+//
+//        System.out.println("in ///// "+userName);
+//
+//        Account account = accountService.findAccount(userName);
+//        if (account != null) {
+//            List<PositionOfPrice> listPositions = account.getPricePositions();
+//            if (listPositions != null) {
+//                System.out.println(listPositions.get(0).getProduct().getName());
+//
+//                model.addAttribute("listPosition", listPositions);
+//            }
+//            return "canvas";
+////            return new ModelAndView()
+//        }else {
 //        model.addAttribute("accounts", accountService.listAccount());
-        return "canvas";
+            return "canvas";
+//        }
     }
 
-    @RequestMapping("/login")
-    public String loginPage() {
-        return "login";
+//    @RequestMapping("/login")
+//    public String loginPage() {
+//        return "login";
+//    }
+
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @ResponseStatus(value= HttpStatus.OK)
+    public ModelAndView login(@RequestParam(value = "error", required = false) String error,
+                              @RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
+
+        ModelAndView model = new ModelAndView();
+        if (error != null) {
+            model.addObject("error", getErrorMessage(request, "SPRING_SECURITY_LAST_EXCEPTION"));
+        }
+        if (logout != null) {
+            model.addObject("msg", "You've been logged out successfully.");
+        }
+        model.setViewName("login");
+        return model;
     }
 
-    @RequestMapping("/login/{error}")
-    public ModelAndView loginError(@PathVariable("error") String errorField) {
+    private String getErrorMessage(HttpServletRequest request, String key) {
+        Exception exception = (Exception) request.getSession().getAttribute(key);
 
-        return new ModelAndView("login", "errorField", new TypeIsNotFound());
-
+        String error = "";
+        if (exception instanceof BadCredentialsException) {
+            error = "Неверный логин или пароль";
+        } else if (exception instanceof LockedException) {
+            error = exception.getMessage();
+        } else {
+            error = "Неверный логин или пароль";
+        }
+        return error;
     }
 
     @RequestMapping(value = "/registrat")
@@ -55,8 +114,6 @@ public class MyController {
 //        model.addAttribute("error", )
         return "login";
     }
-
-
 
 //    @RequestParam("/login?error")
 //    pages.publ ModelAndView errorLogin( Model model){
@@ -122,12 +179,85 @@ public class MyController {
 //        model.addAttribute("contacts", contactService.listContacts(null));
 //        return "index";
 //    }
+    @RequestMapping(value = "/getNewPosition", method = RequestMethod.GET)
+    public String getNewPosition(){
+        return "customer";
+    }
 
     @RequestMapping(value = "/addPricePosition", method = RequestMethod.POST)
-    public String addPricePosition(@RequestParam String login, @RequestParam String name, @RequestParam String codeOfModel,
-                                   @RequestParam String description, @RequestParam MultipartFile photo) {
-        System.out.println(login);
-        return "customer";
+    public String addPricePosition(@RequestParam String name, @RequestParam String codeOfModel,
+                                   @RequestParam String description, @RequestParam MultipartFile photo,
+                                   @RequestParam int capacity, @RequestParam String bookingCondition,
+                                   @RequestParam String deliveryCondition, @RequestParam double cost, Model model) {
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = accountService.findAccount(login);
+        String ref = codeOfModel + login;
+        File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + ref + ".png");
+        try (FileOutputStream fileOut = new FileOutputStream(file)) {
+            fileOut.write(photo.getBytes());
+            fileOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PositionOfPrice positionOfPrice = null;
+
+        Product product = productService.findProduct(name, codeOfModel, ref);    //////////////////////////  вот тут
+        System.out.println("next step");
+        if (product != null) {
+            product.setDescription(description);
+            productService.updateProduct(product);
+        } else {
+
+            product = new Product(name, description, ref, codeOfModel ,capacity);
+            productService.updateProduct(product);
+        }
+
+        Calendar c = Calendar.getInstance();
+        positionOfPrice = new PositionOfPrice(bookingCondition, deliveryCondition,
+                new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), cost, account, product);
+        positionOfPriceService.addPositionOfPrice(positionOfPrice);
+//        account.addPricePositions(positionOfPrice);   /////// проверить будет ли оно правильно работать добавле поз после ее создания
+        System.out.println("-----------------");
+
+        accountService.updateAccount(account);
+
+        List<PositionOfPrice> listPosition = accountService.listPositions(account);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if (listPosition != null) {
+            System.out.println(listPosition.get(0).getProduct().getName() + "     если есть то в контроллере позиция ");
+        }else {
+            System.out.println("Лист позиций пуст");
+        }
+
+        model.addAttribute("listPosition", listPosition);
+
+//        model.addAttribute()  !!!!!!!!!!!!!!!!!!!!!!!!
+
+
+//        System.out.println(login);
+        return "canvas";
+    }
+    @RequestMapping(value = "/givePhoto/{refPhoto}")
+    public ResponseEntity<byte[]> takePhoto(@PathVariable(value = "refPhoto") String refPhoto){
+        byte[] arr;
+        try {
+            FileInputStream reader = new FileInputStream("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/"+refPhoto+".png");
+            BufferedInputStream inputStream = new BufferedInputStream(reader);
+            arr = new byte[inputStream.available()];
+            int s = inputStream.read(arr);
+            if (s == 0)
+                throw new PhotoNotFoundException();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+
+            return new ResponseEntity<byte[]>(arr, headers, HttpStatus.OK);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
     @RequestMapping(value = "/addAccount", method = RequestMethod.POST)
@@ -136,7 +266,7 @@ public class MyController {
 
         AccountType at = accountTypeService.findByTypeName(type);
         accountService.addAccount(new Account(telNumber, email, pass, login, at));
-        model.addAttribute("accounts", accountService.listAccount());
+//        model.addAttribute("accounts", accountService.listAccount());
         model.addAttribute("login", login);
         model.addAttribute("type", type);
 

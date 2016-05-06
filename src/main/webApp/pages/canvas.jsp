@@ -15,18 +15,18 @@
     <title>Off Canvas Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="<c:url value="/pages/css/bootstrap.min.css"/> " rel="stylesheet">
+    <link href="<c:url value="../pages/css/bootstrap.min.css"/> " rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="<c:url value="/pages/assets/css/ie10-viewport-bug-workaround.css"/> " rel="stylesheet">
+    <link href="<c:url value="../pages/assets/css/ie10-viewport-bug-workaround.css"/> " rel="stylesheet">
 
     <!-- Custom pages.styles for this template -->
-    <link href="<c:url value="/pages/styles/offcanvas.css"/> " rel="stylesheet">
+    <link href="<c:url value="../pages/styles/offcanvas.css"/> " rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><![endif]-->
-    <script src="<c:url value="/pages/assets/js/ie8-responsive-file-warning.js "/> "></script>
-    <script src="<c:url value="/pages/assets/js/ie-emulation-modes-warning.js"/> "></script>
+    <script src="<c:url value="../pages/assets/js/ie8-responsive-file-warning.js "/> "></script>
+    <script src="<c:url value="../pages/assets/js/ie-emulation-modes-warning.js"/> "></script>
 
     <!-- HTML5 shim and Respond.pages.jsmymy for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -57,13 +57,13 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Прайс лист</a></li>
-                    <li><a href="#">Добавить позицию</a></li>
-                    <li><a href="#about">Заказы</a></li>
+                    <li><a href="<c:url value="/getNewPosition"/> ">Добавить позицию</a></li>
+                    <li><a href="<c:url value="/booking"/> ">Заказы</a></li>
                     <li><a href="#ownChanges">Личные данные</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
 
-                    <%--<li><p class="text"><sec:authentication property="principal.username"/></p></li>--%>
+                    <li><p class="text"><sec:authentication property="principal.username"/></p></li>
                     <li><a href="<c:url value="/logout"/>">Вийти</a></li>
                     <!-- <li><a href="#">Войти</a></li> -->
                 </ul>
@@ -73,6 +73,9 @@
         <!-- /.container -->
     </nav>
     <!-- /.navbar -->
+
+
+    <%--<option value="${account.login}">Name: ${account.login} , User age: ${account.pass}</option>--%>
 
     <div class="container">
 
@@ -84,6 +87,7 @@
                 </p>
                 <!-- <div class="page-header"> -->
                 <img class="page-header" style="margin-top : 0" src="<c:url value="/pages/images/header.jpg"/> "
+                     <%--pages/images/header.jpg--%>
                      height="250" width="1000">
                 <!--  <h1>Hello, world!</h1>
                  <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p> -->
@@ -99,7 +103,7 @@
             </div>
         </div>
     </div>
-
+    <c:forEach items="${listPosition}" var="position">
 
     <div class="container marketing">
 
@@ -109,18 +113,25 @@
         <div class="row featurette">
             <div class="col-md-7 col-md-push-5">
                 <ul>
-                    <li><h3 class="featurette-heading">Название товара</h3></li>
-                    <li><h4 class="text-muted">qwerty1234</h4></li>
-                    <li><p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta
-                        felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce
-                        dapibus, tellus ac cursus commodo.</p></li>
-                    <li><p><a class="btn btn-default" href="#" role="button">Изменить &raquo;</a></p></li>
-                    <li><p><a class="btn btn-default" href="#" role="button">Удалить &raquo;</a></p></li>
+                    <%--Here will name of positioin from product--%>
+                    <li><h3 class="featurette-heading">${position.product.name}</h3></li>
+                        <%--Here will be code of position from product--%>
+                    <li><h4 class="text-muted">position.product.codeOfModel</h4></li>
+                        <%--Here will be decription from position--%>
+                    <li><p class="lead">position.product.description</p></li>
+                    <li><p><a class="btn btn-default" href="<c:url value="/changePosition"/> " role="button">Изменить &raquo;</a></p></li>
+                    <%--<li><form action="<c:url value="/changePosition"/>" method="post">--%>
+                        <%--&lt;%&ndash;<input type="hidden" name="">&ndash;%&gt;--%>
+                    <%--</form> </li>--%>
+
+                    <%--<li><form action="<c:url value="/deletePosition"/>" method="post">--%>
+                        <%--<input type="hidden" name="positionId" value="${}">--%>
+                    <%--</form>  </li>--%>
                 </ul>
 
             </div>
             <div class="col-md-5 col-md-pull-7">
-                <img class="featurette-image img-responsive center-block" src="<c:url value="/pages/images/staff.jpg"/> "
+                <img class="featurette-image img-responsive center-block" src="<c:url value="/givePhoto/${position.product.photo}"/> "
                      alt="Изображение загружается">
 
             </div>
@@ -159,8 +170,8 @@
             <p class="pull-right"><a href="#">Back to top</a></p>
                 <%--<p>&copy; 2015 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>--%>
         </footer>
-
     </div>
+    </c:forEach>
 </sec:authorize>
 <!-- </div> --><!-- /.container -->
 
@@ -170,10 +181,10 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.pages.jsmy "></script>
 <script>window.jQuery || document.write('<script src="/pages/assets/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="<c:url value="/pages/js/bootstrap.min.js"/> "></script>
+<script src="<c:url value="../pages/js/bootstrap.min.js"/> "></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="<c:url value="/pages/assets/js/ie10-viewport-bug-workaround.js"/> "></script>
-<script src="<c:url value="/pages/jsmy/offcanvas.js"/> "></script>
+<script src="<c:url value="../pages/assets/js/ie10-viewport-bug-workaround.js"/> "></script>
+<script src="<c:url value="../pages/jsmy/offcanvas.js"/> "></script>
 
 </body>
 </html>

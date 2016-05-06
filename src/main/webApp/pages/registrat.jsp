@@ -20,7 +20,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading"><h4>Регистрация</h4></div>
                 <div class="panel-body">
-                    <form enctype="multipart/form-data" action="/addAccount" method="post">
+                    <form enctype="multipart/form-data" action="<c:url value="/addAccount"/> " method="post">
                         <div class="form-group">
                             <label for="login">Логин</label>
                             <input type="text" class="form-control" name="login" id="login" placeholder="Логин"

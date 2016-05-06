@@ -1,10 +1,11 @@
 package pac.services;
 
-import pac.daoInter.AccountDAO;
-import pac.entities.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pac.daoInter.AccountDAO;
+import pac.entities.Account;
+import pac.entities.PositionOfPrice;
 
 import java.util.List;
 
@@ -27,15 +28,30 @@ public class AccountService {
         accountDAO.delete(account);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<Account> listAccount(){
         return accountDAO.list();
     }
 
-    @Transactional(readOnly = true)
-    public Account findAccount(String login){
-        return accountDAO.findOne(login);
+    @Transactional
+    public void updateAccount(Account account){
+        accountDAO.update(account);
     }
+
+    @Transactional
+    public Account findAccount(String login){
+        Account a =  accountDAO.findOne(login);
+        if (a != null){
+            System.out.println(a.getLogin()+"     "+a.getPass());
+            return a;
+        }else
+        return null;
+    }
+    @Transactional
+    public List<PositionOfPrice> listPositions(Account account){
+        return accountDAO.listPositions(account);
+    }
+
 
 
 

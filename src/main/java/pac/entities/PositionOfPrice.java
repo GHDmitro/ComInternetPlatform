@@ -21,8 +21,8 @@ public class PositionOfPrice {
     @Column(name = "deliveryCondition")
     private String deliveryCondition;
 
-    @Column(name = "amount")
-    private int amount;
+//    @Column(name = "amount")
+//    private int amount;
 
     @Column(name = "dateOfAdding")
     private Date dateOfAdding;
@@ -30,24 +30,24 @@ public class PositionOfPrice {
     @Column(name = "cost")
     private double cost;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_login")
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
     public PositionOfPrice() {
     }
 
-    public PositionOfPrice(String bookingCondition, String deliveryCondition, int amount, Date dateOfAdding, double cost,
+    public PositionOfPrice(String bookingCondition, String deliveryCondition, Date dateOfAdding, double cost,
                            Account account, Product product) {
         this.account = account;
         this.product = product;
         this.bookingCondition = bookingCondition;
         this.deliveryCondition = deliveryCondition;
-        this.amount = amount;
+//        this.amount = amount;
         this.dateOfAdding = dateOfAdding;
         this.cost = cost;
     }
@@ -92,13 +92,13 @@ public class PositionOfPrice {
         this.deliveryCondition = deliveryCondition;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
+//    public int getAmount() {
+//        return amount;
+//    }
+//
+//    public void setAmount(int amount) {
+//        this.amount = amount;
+//    }
 
     public Date getDateOfAdding() {
         return dateOfAdding;

@@ -1,8 +1,7 @@
 package pac.entities;
 
 import javax.persistence.*;
-
-import javax.persistence.Table;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "Account")
+//@NamedEntityGraph(name = "Account.pricePositions",
+//        attributeNodes = @NamedAttributeNode("pricePositions"))
 public class Account {
 
     @Id
@@ -26,10 +27,10 @@ public class Account {
     @Column(name = "state")
     private boolean state;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PositionOfPrice> positions = new ArrayList<PositionOfPrice>();
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<PositionOfPrice> pricePositions = new ArrayList<PositionOfPrice>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "accountType_typeName")
     private AccountType accountType;
 
@@ -45,15 +46,16 @@ public class Account {
         this.login = login;
     }
 
-    public List<PositionOfPrice> getPositions() {
-        return positions;
+    @Transactional
+    public List<PositionOfPrice> getPricePositions() {
+        return pricePositions;
     }
 
-    public void addPosition(PositionOfPrice position){
-        positions.add(position);
-        if (position.getAccount() != this){
-            position.setAccount(this);
-        }
+    public void addPricePositions(PositionOfPrice position){
+        pricePositions.add(position);
+//        if (position.getAccount() != this){
+//            position.setAccount(this);
+//        }
     }
 
     public AccountType getAccountType() {

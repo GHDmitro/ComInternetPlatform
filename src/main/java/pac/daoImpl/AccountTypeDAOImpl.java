@@ -35,9 +35,9 @@ public class AccountTypeDAOImpl implements AccountTypeDAO{
             query.setParameter("typename", type);
             ac = (AccountType) query.getSingleResult();
         }catch (NoResultException e){
-            System.out.println("No such type");
+            System.out.println("No such type in type dao : "+type);
         }catch (NonUniqueResultException e){
-            System.out.println("Non unique result");
+            System.out.println("Non unique result in typeDao" );
         }
         return ac;
     }
@@ -51,7 +51,7 @@ public class AccountTypeDAOImpl implements AccountTypeDAO{
     @Override
     public List<Account> listAccountsForType(AccountType accountType) {
         Query query = entityManager.createQuery("select a from Account a where a.accountType =:accountType");
-        query.setParameter("accountType", accountType.getTypeName());
+        query.setParameter("accountType", accountType);
             return (List<Account>) query.getResultList();
     }
 }

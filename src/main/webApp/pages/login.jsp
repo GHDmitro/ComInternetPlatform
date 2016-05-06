@@ -15,18 +15,18 @@
     <title>Singing</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="<c:url value="/pages/css/bootstrap.min.css"/> " rel="stylesheet">
+    <link href="<c:url value="../pages/css/bootstrap.min.css"/> " rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="<c:url value="/pages/ssets/css/ie10-viewport-bug-workaround.css"/> " rel="stylesheet">
+    <link href="<c:url value="../pages/assets/css/ie10-viewport-bug-workaround.css"/> " rel="stylesheet">
 
     <!-- Custom pages.styles for this template -->
-    <link href="<c:url value="/pages/styles/signin.css"/> " rel="stylesheet">
+    <link href="<c:url value="../pages/styles/signin.css"/> " rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><![endif]-->
-    <script src="<c:url value="/pages/assets/js/ie8-responsive-file-warning.js"/> "></script>
-    <script src="<c:url value="/pages/assets/js/ie-emulation-modes-warning.js"/> "></script>
+    <script src="<c:url value="../pages/assets/js/ie8-responsive-file-warning.js"/> "></script>
+    <script src="<c:url value="../pages/assets/js/ie-emulation-modes-warning.js"/> "></script>
 
     <!-- HTML5 shim and Respond.pages.jsmymy for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -39,10 +39,10 @@
 
 <div class="container">
     <%--<sec:authorize access="!isAuthenticated()">--%>
-    <c:url value="/j_spring_security_check" var="loginUrl"/>
+
     <div class="panel-body">
 
-        <form class="form-signin" action="${loginUrl}">
+        <form class="form-signin" action="<c:url value="/login"/>" method="post">
             <h3 class="form-signin-heading">Пожалуйста войдите в систему</h3>
             <label for="inputLogin" class="sr-only">Ваш логин</label>
             <input type="text" name="j_username" id="inputLogin" class="form-control" placeholder="Логин" required
@@ -60,6 +60,6 @@
 
 
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="<c:url value="/pages/assets/js/ie10-viewport-bug-workaround.js"/> "></script>
+<script src="<c:url value="../pages/assets/js/ie10-viewport-bug-workaround.js"/> "></script>
 </body>
 </html>

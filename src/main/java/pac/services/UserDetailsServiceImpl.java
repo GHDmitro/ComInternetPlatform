@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pac.daoInter.AccountDAO;
 import pac.entities.Account;
 
 import java.util.HashSet;
@@ -19,7 +20,7 @@ import java.util.Set;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private AccountService accountService;
+    private AccountDAO accountDAO;
     
 //    @Autowired
 //    private AccountTypeService accountTypeService;
@@ -27,8 +28,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         // с помощью нашего сервиса UserService получаем User
-        Account account = accountService.findAccount(login);
+        Account account = accountDAO.findOne(login);
         // указываем роли для этого пользователя
+        System.out.println("------ "+login);
         Set<GrantedAuthority> roles = new HashSet<>();
         roles.add(new SimpleGrantedAuthority(account.getAccountType().getTypeName()));
 

@@ -26,8 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(getShaPasswordEncoder());
+                .userDetailsService(userDetailsService);
+//                .passwordEncoder(getShaPasswordEncoder());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         // указываем правила запросов
                         // по которым будет определятся доступ к ресурсам и остальным данным
                 .authorizeRequests()
-                .antMatchers("/resources/**", "/**").permitAll()
+                .antMatchers("/webApp/**", "/**").permitAll()
                 .anyRequest().permitAll()
                 .and();
 
@@ -46,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // указываем страницу с формой логина
                 .loginPage("/login")
                         // указываем action с формы логина
-                .loginProcessingUrl("/j_spring_security_check")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
                         // указываем URL при неудачном логине
                 .failureUrl("/login?error")
 //                .failureUrl("/login")
@@ -63,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
 //                .logoutUrl("/login")
                         // указываем URL при удачном логауте
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/login")
 //                .logoutSuccessUrl("/login")
                         // делаем не валидной текущую сессию
                 .invalidateHttpSession(true);

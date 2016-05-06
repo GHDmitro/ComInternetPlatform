@@ -22,7 +22,8 @@ public class Product {
     private String photo;
     @Column(name = "codeOfModel")
     private String codeOfModel;
-
+    @Column(name = "amount")
+    private int amount;
 
     public Product() {
     }
@@ -34,14 +35,22 @@ public class Product {
 //        this.codeOfModel = codeOfModel;
 //    }
 
-    public Product(String name, String description, String photo, String codeOfModel) {
+    public Product(String name, String description, String photo, String codeOfModel, int amount ) {
         this.name = name;
         this.description = description;
         this.photo = photo;
         this.codeOfModel = codeOfModel;
+        this.amount = amount;
     }
 
 
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
     public int getId() {
         return id;
