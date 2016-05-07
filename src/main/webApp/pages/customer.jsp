@@ -79,7 +79,7 @@
                   <input type="file" name="photo" id="Photo" placeholder="Photo" required>
                   <%--<label for="Photo">Загрузить фото</label>--%>
                   <p class="help-block"></p>
-                  <a href="<c:url value="/"/>" style="align-content: center">На главную</a>
+                  <a href="<c:url value="/home"/>" style="align-content: center">На главную</a>
                 </div>
                 <button type="submit" class="btn btn-success">Добавить в прайс</button>
               </form>

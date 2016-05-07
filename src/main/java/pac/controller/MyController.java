@@ -64,18 +64,26 @@ public class MyController {
 ////            return new ModelAndView()
 //        }else {
 //        model.addAttribute("accounts", accountService.listAccount());
-            return "canvas";
+        return "login";
 //        }
     }
 
-//    @RequestMapping("/login")
-//    public String loginPage() {
-//        return "login";
-//    }
+    @RequestMapping("/home")
+    public String homePage(Model model, HttpServletRequest request) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("------- " + userName + "  ------------");
+        Account account = accountService.findAccount(userName);
+        if (account != null) {
+            System.out.println(account.getLogin());
+            //List<PositionOfPrice> list = account.getPricePositions();
+            //model.addAttribute("listPosition", list);
+            return "canvas";
+        } else return "login";
 
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    @ResponseStatus(value= HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.OK)
     public ModelAndView login(@RequestParam(value = "error", required = false) String error,
                               @RequestParam(value = "logout", required = false) String logout, HttpServletRequest request) {
 
@@ -115,12 +123,6 @@ public class MyController {
         return "login";
     }
 
-//    @RequestParam("/login?error")
-//    pages.publ ModelAndView errorLogin( Model model){
-//
-//        throw new TypeIsNotFound();
-//    }
-
 //    @RequestMapping("/contact_add_page")
 //    pages.publ String contactAddPage(Model model) {
 //        model.addAttribute("groups", contactService.listGroups());
@@ -132,7 +134,7 @@ public class MyController {
 //        return "group_add_page";
 //    }
 
-//    @RequestMapping("/group/{id}")
+    //    @RequestMapping("/group/{id}")
 //    pages.publ String listGroup(@PathVariable(value = "id") long groupId, Model model) {
 //        Group group = (groupId != DEFAULT_GROUP_ID) ? contactService.findGroup(groupId) : null;
 //
@@ -180,7 +182,7 @@ public class MyController {
 //        return "index";
 //    }
     @RequestMapping(value = "/getNewPosition", method = RequestMethod.GET)
-    public String getNewPosition(){
+    public String getNewPosition() {
         return "customer";
     }
 
@@ -208,7 +210,7 @@ public class MyController {
             productService.updateProduct(product);
         } else {
 
-            product = new Product(name, description, ref, codeOfModel ,capacity);
+            product = new Product(name, description, ref, codeOfModel, capacity);
             productService.updateProduct(product);
         }
 
@@ -225,7 +227,7 @@ public class MyController {
         List<PositionOfPrice> listPosition = account.getPricePositions();
         if (listPosition != null) {
             System.out.println(listPosition.get(0).getProduct().getName() + "     если есть то в контроллере позиция ");
-        }else {
+        } else {
             System.out.println("Лист позиций пуст");
         }
 
@@ -237,11 +239,64 @@ public class MyController {
 //        System.out.println(login);
         return "canvas";
     }
+
+    @RequestMapping(value = "/ownData")
+    public String ownData(Model model) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = accountService.findAccount(userName);
+        String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + userName + ".png";
+        if ((new File(fileName)).exists()) {
+            // существует
+            model.addAttribute("refPhoto", userName);
+        } else {
+            // не существует
+            model.addAttribute("refPhoto", "vrevedimalo123");
+        }
+        if (account != null){
+            model.addAttribute("email", account.getEmail());
+            model.addAttribute("telNumber", account.getTelNumber());
+        }
+        return "ownData";
+    }
+    @RequestMapping(value = "/changeOwnData", method = RequestMethod.POST)
+    public String changeOwnData(@RequestParam MultipartFile photo, @RequestParam String email,
+                                @RequestParam String telNumber, Model model) {
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (photo != null) {
+            File file = new File(login);
+            if (file.exists()) {
+                file.delete();
+            }
+            // существует
+            file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                fileOut.write(photo.getBytes());
+                fileOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            model.addAttribute("refPhoto", login);
+        }
+
+        Account account =  accountService.findAccount(login);
+        if (email !=  null){
+            account.setEmail(email);
+            model.addAttribute("email", email);
+        }
+        if (telNumber != null){
+            account.setTelNumber(telNumber);
+            model.addAttribute("telNumber", telNumber);
+        }
+        accountService.updateAccount(account);
+
+        return "ownData";
+    }
+
     @RequestMapping(value = "/givePhoto/{refPhoto}")
-    public ResponseEntity<byte[]> takePhoto(@PathVariable(value = "refPhoto") String refPhoto){
+    public ResponseEntity<byte[]> takePhoto(@PathVariable(value = "refPhoto") String refPhoto) {
         byte[] arr;
         try {
-            FileInputStream reader = new FileInputStream("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/"+refPhoto+".png");
+            FileInputStream reader = new FileInputStream("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
             BufferedInputStream inputStream = new BufferedInputStream(reader);
             arr = new byte[inputStream.available()];
             int s = inputStream.read(arr);

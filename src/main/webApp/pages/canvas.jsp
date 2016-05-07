@@ -38,7 +38,12 @@
 <body>
 <sec:authorize access="!isAuthenticated()">
 
-    <p class="text-center"><a class="btn btn-lg btn-success" href="<c:url value="/login"/>" role="button">Войти</a></p>
+    <p class="text-center">
+        <ul>
+            <li><h2>Вы не зарегистрированны, попробуйте ввести пароль снова либо зарегистрируйтесь!</h2></li>
+            <li><a class="btn btn-lg btn-success" href="<c:url value="/login"/>" role="button">Войти</a></li>
+        </ul>
+    </p>
 
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
@@ -59,11 +64,11 @@
                     <li class="active"><a href="#">Прайс лист</a></li>
                     <li><a href="<c:url value="/getNewPosition"/> ">Добавить позицию</a></li>
                     <li><a href="<c:url value="/booking"/> ">Заказы</a></li>
-                    <li><a href="#ownChanges">Личные данные</a></li>
+                    <li><a href="<c:url value="/ownData"/> ">Личные данные пользователя</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
 
-                    <li><p class="text"><sec:authentication property="principal.username"/></p></li>
+                    <%--<li><p class="text"><sec:authentication property="principal.username"/></p></li>--%>
                     <li><a href="<c:url value="/logout"/>">Вийти</a></li>
                     <!-- <li><a href="#">Войти</a></li> -->
                 </ul>
@@ -103,7 +108,7 @@
             </div>
         </div>
     </div>
-    <c:forEach items="${listPosition}" var="position">
+    <c:forEach items="${list}" var="position">
 
     <div class="container marketing">
 

@@ -50,6 +50,7 @@
                             <p class="help-block"></p>
                         </div>
                         <button type="submit" class="btn btn-success">Подтвердить регистрацию</button>
+                        <a href="<c:url value="/home"/>">На главную</a>
                     </form>
                 </div>
             </div>
