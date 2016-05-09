@@ -1,6 +1,7 @@
 package pac.daoInter;
 
 import pac.entities.Account;
+import pac.entities.AccountType;
 import pac.entities.PositionOfPrice;
 
 import java.util.List;
@@ -13,6 +14,6 @@ public interface AccountDAO {
     void delete(Account account);
     void update(Account account);
     Account findOne(String login);
-    List<Account> list();
+    List<Account> list(AccountType accountType);
     List<PositionOfPrice> listPositions(Account account);
 }

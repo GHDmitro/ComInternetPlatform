@@ -61,14 +61,23 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Прайс лист</a></li>
-                    <li><a href="<c:url value="/getNewPosition"/> ">Добавить позицию</a></li>
+                    <%--<li class="active"><a href="#">Прайс лист</a></li>--%>
+                    <sec:authorize access="hasRole('customer')">
+                    <li><a href="<c:url value="/addNewPosition"/> ">Добавить позицию</a></li>
                     <li><a href="<c:url value="/booking"/> ">Заказы</a></li>
-                    <li><a href="<c:url value="/ownData"/> ">Личные данные пользователя</a></li>
+                        <li><a href="<c:url value="/ownData"/> ">Личные данные пользователя</a></li>
+                    </sec:authorize>
+                    <sec:authorize access="hasRole('client')">
+                        <li><a href="<c:url value="/ownData/${login}"/> ">Личные данные пользователя</a></li>
+                    </sec:authorize>
+
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
 
                     <%--<li><p class="text"><sec:authentication property="principal.username"/></p></li>--%>
+                        <sec:authorize access="hasRole('client')">
+                            <li><a href="<c:url value="/home"/> ">К списку продавцов</a></li>
+                        </sec:authorize>
                     <li><a href="<c:url value="/logout"/>">Вийти</a></li>
                     <!-- <li><a href="#">Войти</a></li> -->
                 </ul>
@@ -108,7 +117,7 @@
             </div>
         </div>
     </div>
-    <c:forEach items="${list}" var="position">
+    <c:forEach items="${listPositions}" var="position">
 
     <div class="container marketing">
 
@@ -119,12 +128,19 @@
             <div class="col-md-7 col-md-push-5">
                 <ul>
                     <%--Here will name of positioin from product--%>
-                    <li><h3 class="featurette-heading">${position.product.name}</h3></li>
+                    <li><h3 class="featurette-heading"><c:out value="${position.product.name}"/></h3></li>
                         <%--Here will be code of position from product--%>
-                    <li><h4 class="text-muted">position.product.codeOfModel</h4></li>
+                    <li><h4 class="text-muted"><c:out value="${position.product.codeOfModel}"/></h4></li>
                         <%--Here will be decription from position--%>
-                    <li><p class="lead">position.product.description</p></li>
-                    <li><p><a class="btn btn-default" href="<c:url value="/changePosition"/> " role="button">Изменить &raquo;</a></p></li>
+                    <li><p class="lead"><c:out value="${position.product.description}"/></p></li>
+                        <sec:authorize access="hasRole('customer')">
+                         <li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button">Изменить &raquo;</a></p></li>
+                        <li><p><a class="btn btn-default" href="<c:url value="/deletePosition/${position.id}"/> " role="button">Удалить &raquo;</a></p></li>
+                       </sec:authorize>
+                        <%--<sec:authorize access="hasRole('client')">--%>
+                            <%----%>
+                            <%--<li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button">Изменить &raquo;</a></p></li>--%>
+                        <%--</sec:authorize>--%>
                     <%--<li><form action="<c:url value="/changePosition"/>" method="post">--%>
                         <%--&lt;%&ndash;<input type="hidden" name="">&ndash;%&gt;--%>
                     <%--</form> </li>--%>
@@ -139,7 +155,7 @@
                 <img class="featurette-image img-responsive center-block" src="<c:url value="/givePhoto/${position.product.photo}"/> "
                      alt="Изображение загружается">
 
-            </div>
+            </div><br>
             <div class="panel panel-center">
                 <div class="panel-body">
                     <form action="#" method="post">

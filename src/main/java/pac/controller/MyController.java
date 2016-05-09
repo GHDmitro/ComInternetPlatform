@@ -5,9 +5,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +21,6 @@ import pac.entities.AccountType;
 import pac.entities.PositionOfPrice;
 import pac.entities.Product;
 import pac.errors.PhotoNotFoundException;
-import pac.errors.TypeIsNotFound;
 import pac.services.AccountService;
 import pac.services.AccountTypeService;
 import pac.services.PositionOfPriceService;
@@ -28,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -68,18 +71,62 @@ public class MyController {
 //        }
     }
 
-    @RequestMapping("/home")
-    public String homePage(Model model, HttpServletRequest request) {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("------- " + userName + "  ------------");
-        Account account = accountService.findAccount(userName);
-        if (account != null) {
-            System.out.println(account.getLogin());
-            //List<PositionOfPrice> list = account.getPricePositions();
-            //model.addAttribute("listPosition", list);
-            return "canvas";
+    @RequestMapping(value = "/home")
+    public String home(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+//            if (login == null) {
+//
+//            }
+            UserDetails userDetail = (UserDetails) auth.getPrincipal();
+            String login = userDetail.getUsername();
+            Account account = accountService.findAccount(login);
+
+            if (account.getAccountType().getTypeName().equals("customer")) {
+                List<PositionOfPrice> list = positionOfPriceService.listPositions(account);
+                if (list.size() == 0) {
+                    List<PositionOfPrice> list1 = new LinkedList<>();
+                    Calendar c = Calendar.getInstance();
+                    list1.add(new PositionOfPrice("Здесь будет ваши условия заказа", "Здесь будут ваши условия доставки",
+                            new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), 000000, account, new Product("Название товара",
+                            "Описание товара", "defaultPhotoToScreen", "Код модели", 000000)));
+                    list = list1;
+                }
+                model.addAttribute("listPositions", list);
+//                model.addAttribute("login", login);
+                return "canvas";
+            } else if (account.getAccountType().getTypeName().equals("client")) {
+                AccountType accountType = accountTypeService.findByTypeName("customer");
+                List<Account> accountList = accountService.listAccount(accountType);
+                model.addAttribute("accountList", accountList);
+                return "home";
+            } else return "login";
         } else return "login";
 
+    }
+
+
+    @RequestMapping(value = "/home/{login}")
+    public String homePage(@PathVariable(value = "login") String login, Model model) {
+        Authentication userName = SecurityContextHolder.getContext().getAuthentication();
+        if (!(userName instanceof AnonymousAuthenticationToken)) {
+            Account account = accountService.findAccount(login);
+            if (account != null && account.getAccountType().getTypeName().equals("customer")) {
+                List<PositionOfPrice> list = positionOfPriceService.listPositions(account);
+                if (list.size() == 0) {
+                    List<PositionOfPrice> list1 = new LinkedList<>();
+                    Calendar c = Calendar.getInstance();
+                    list1.add(new PositionOfPrice("Здесь будет ваши условия заказа", "Здесь будут ваши условия доставки",
+                            new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), 000000, account, new Product("Название товара",
+                            "Описание товара", "defaultPhotoToScreen", "Код модели", 000000)));
+                    list = list1;
+                }
+//                System.out.println(list.get(0).getProduct().getName() + "---------------------------");/\
+                model.addAttribute("listPositions", list);
+                model.addAttribute("login", login);
+                return "canvas";
+            } else return "login";
+        } else return "login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -181,122 +228,204 @@ public class MyController {
 //        model.addAttribute("contacts", contactService.listContacts(null));
 //        return "index";
 //    }
-    @RequestMapping(value = "/getNewPosition", method = RequestMethod.GET)
-    public String getNewPosition() {
-        return "customer";
+    @RequestMapping(value = "/addNewPosition", method = RequestMethod.GET)
+    public String getNewPosition(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            return "customer";
+        } else return "login";
+
+
     }
+
 
     @RequestMapping(value = "/addPricePosition", method = RequestMethod.POST)
     public String addPricePosition(@RequestParam String name, @RequestParam String codeOfModel,
                                    @RequestParam String description, @RequestParam MultipartFile photo,
                                    @RequestParam int capacity, @RequestParam String bookingCondition,
                                    @RequestParam String deliveryCondition, @RequestParam double cost, Model model) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+//        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(auth instanceof AnonymousAuthenticationToken)) {
+        UserDetails userDetail = (UserDetails) auth.getPrincipal();
+        String login = userDetail.getUsername();
         Account account = accountService.findAccount(login);
+
+        System.out.println("addPricePosition: "+account.getEmail()+"   "+account.getTelNumber());
         String ref = codeOfModel + login;
-        File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + ref + ".png");
-        try (FileOutputStream fileOut = new FileOutputStream(file)) {
-            fileOut.write(photo.getBytes());
-            fileOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        PositionOfPrice positionOfPrice = null;
 
         Product product = productService.findProduct(name, codeOfModel, ref);    //////////////////////////  вот тут
-        System.out.println("next step");
+//            System.out.println("next step");
         if (product != null) {
-            product.setDescription(description);
-            productService.updateProduct(product);
+            model.addAttribute("error", "Название: " + name + ", модель: " + codeOfModel + " -- тот продукт уже существует," +
+                    " попробуйте добавить что-то другое");
+            return "customer";
         } else {
+            if (!photo.isEmpty()) {
+                File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + ref + ".png");
+                try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                    fileOut.write(photo.getBytes());
+                    fileOut.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                product = new Product(name, description, ref, codeOfModel, capacity);
+            } else product = new Product(name, description, "defaultPhotoToScreen", codeOfModel, capacity);
 
-            product = new Product(name, description, ref, codeOfModel, capacity);
-            productService.updateProduct(product);
+//            productService.updateProduct(product);
         }
+
 
         Calendar c = Calendar.getInstance();
-        positionOfPrice = new PositionOfPrice(bookingCondition, deliveryCondition,
+
+        PositionOfPrice positionOfPrice = new PositionOfPrice(bookingCondition, deliveryCondition,
                 new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), cost, account, product);
         positionOfPriceService.addPositionOfPrice(positionOfPrice);
-        account.addPricePositions(positionOfPrice);   /////// проверить будет ли оно правильно работать добавле поз после ее создания
+//            account.addPricePositions(positionOfPrice);   /////// проверить будет ли оно правильно работать добавле поз после ее создания
         System.out.println("-----------------");
 
-        accountService.updateAccount(account);
-
+//        accountService.updateAccount(account);
+//
 //        List<PositionOfPrice> listPosition = accountService.listPositions(account);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        List<PositionOfPrice> listPosition = account.getPricePositions();
-        if (listPosition != null) {
-            System.out.println(listPosition.get(0).getProduct().getName() + "     если есть то в контроллере позиция ");
+        List<PositionOfPrice> listPosition = positionOfPriceService.listPositions(account);
+        if (listPosition.size() != 0) {
+            model.addAttribute("listPositions", listPosition);
+//            System.out.println(listPosition.get(0).getProduct().getName() + "     если есть то в контроллере позиция ");
         } else {
             System.out.println("Лист позиций пуст");
+            model.addAttribute("error", "Проблеммы у сервера в addPricePosition");
+            return "customer";
         }
 
-        model.addAttribute("listPosition", listPosition);
 
 //        model.addAttribute()  !!!!!!!!!!!!!!!!!!!!!!!!
 
 
 //        System.out.println(login);
         return "canvas";
+//        } else return "login";
+    }
+
+
+    @RequestMapping(value = "/ownData/{login}")
+    public String ownData(@PathVariable(value = "login") String login, Model model) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (login != null) {
+            Account account1 = accountService.findAccount(userName);
+            Account account = accountService.findAccount(login);
+            if (account != null && account.getAccountType().getTypeName().equals("customer") && account1.getAccountType().getTypeName().equals("client")) {
+                String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png";
+                if ((new File(fileName)).exists()) {
+                    // существует
+                    model.addAttribute("refPhoto", login);
+                    model.addAttribute("login", login);
+                } else {
+                    // не существует
+                    model.addAttribute("refPhoto", "defaultPhotoToScreen");
+                    model.addAttribute("login", login);
+                }
+
+                model.addAttribute("email", account.getEmail());
+                model.addAttribute("telNumber", account.getTelNumber());
+
+                return "ownData";
+            } else return "login";
+        }
+        return "login";
     }
 
     @RequestMapping(value = "/ownData")
     public String ownData(Model model) {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountService.findAccount(userName);
-        String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + userName + ".png";
-        if ((new File(fileName)).exists()) {
-            // существует
-            model.addAttribute("refPhoto", userName);
-        } else {
-            // не существует
-            model.addAttribute("refPhoto", "vrevedimalo123");
-        }
-        if (account != null){
-            model.addAttribute("email", account.getEmail());
-            model.addAttribute("telNumber", account.getTelNumber());
-        }
-        return "ownData";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            String login = auth.getName();
+            Account account = accountService.findAccount(login);
+            if (account.getAccountType().getTypeName().equals("customer")) {
+                String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png";
+                if ((new File(fileName)).exists()) {
+                    // существует
+                    model.addAttribute("refPhoto", login);
+                    System.out.println("model.addAttribute(\"refPhoto\", login);");
+                } else {
+                    // не существует
+                    model.addAttribute("refPhoto", "defaultPhotoToScreen");
+                    System.out.println("model.addAttribute(\"refPhoto\", \"defaultPhotoToScreen\");");
+                }
+
+                System.out.println("ownData: "+account.getEmail() +"    "+account.getTelNumber());
+
+                model.addAttribute("email", account.getEmail());
+                model.addAttribute("telNumber", account.getTelNumber());
+
+                return "ownData";
+            } else return "login";
+        } else return "login";
     }
+
     @RequestMapping(value = "/changeOwnData", method = RequestMethod.POST)
     public String changeOwnData(@RequestParam MultipartFile photo, @RequestParam String email,
                                 @RequestParam String telNumber, Model model) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (photo != null) {
-            File file = new File(login);
-            if (file.exists()) {
-                file.delete();
-            }
-            // существует
-            file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
-            try (FileOutputStream fileOut = new FileOutputStream(file)) {
-                fileOut.write(photo.getBytes());
-                fileOut.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+        Account account = accountService.findAccount(login);
+
+        System.out.println(account.getLogin()+"  "+account.getPass()+"   "+account.getEmail()+"   "+account.getTelNumber());
+        if (account.getAccountType().getTypeName().equals("customer")) {
+            if (!photo.isEmpty()) {
+                File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
+                if (file.exists()) {
+                    file.delete();
+                }
+                System.out.println("фотки нету но в IF вошел ---------------------------");
+                // существует
+
+                File file1 = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
+                try (FileOutputStream fileOut = new FileOutputStream(file1)) {
+                    fileOut.write(photo.getBytes());
+                    fileOut.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             model.addAttribute("refPhoto", login);
-        }
 
-        Account account =  accountService.findAccount(login);
-        if (email !=  null){
-            account.setEmail(email);
-            model.addAttribute("email", email);
-        }
-        if (telNumber != null){
-            account.setTelNumber(telNumber);
-            model.addAttribute("telNumber", telNumber);
-        }
-        accountService.updateAccount(account);
+            if (email.length() == 0 ) {
+                model.addAttribute("email", account.getEmail());
+                System.out.println("changeOwnData: email by Account: " + account.getEmail());
 
-        return "ownData";
+            } else {
+                account.setEmail(email);
+                System.out.println("changeOwnData: email: "+email);
+                model.addAttribute("email", email);
+            }
+
+            if (telNumber.length() == 0) {
+                model.addAttribute("telNumber", account.getTelNumber());
+                System.out.println("changeOwnData: telNumber by Account: " + account.getTelNumber());
+
+            } else {
+                System.out.println("changeOwnData: telNumber:"+telNumber);
+                account.setTelNumber(telNumber);
+                model.addAttribute("telNumber", telNumber);
+            }
+
+
+            accountService.updateAccount(account);
+
+            return "ownData";
+        } else return "login";
     }
 
     @RequestMapping(value = "/givePhoto/{refPhoto}")
     public ResponseEntity<byte[]> takePhoto(@PathVariable(value = "refPhoto") String refPhoto) {
         byte[] arr;
         try {
-            FileInputStream reader = new FileInputStream("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
+            File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
+            if (!file.exists()){
+                file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/defaultPhotoToScreen.png");
+            }
+            FileInputStream reader = new FileInputStream(file);
             BufferedInputStream inputStream = new BufferedInputStream(reader);
             arr = new byte[inputStream.available()];
             int s = inputStream.read(arr);
@@ -304,6 +433,7 @@ public class MyController {
                 throw new PhotoNotFoundException();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_PNG);
+            System.out.println("отдает  фотку на страничку");
 
             return new ResponseEntity<byte[]>(arr, headers, HttpStatus.OK);
 
@@ -326,11 +456,12 @@ public class MyController {
         model.addAttribute("login", login);
         model.addAttribute("type", type);
 
-        if (type.equalsIgnoreCase("customer")) {
-            return "customer";
-        } else if (type.equalsIgnoreCase("client")) {
-            return "client";
-        } else throw new TypeIsNotFound();
+//        if (type.equalsIgnoreCase("customer")) {
+//            return "customer";
+//        } else if (type.equalsIgnoreCase("client")) {
+//            return "client";
+//        } else throw new TypeIsNotFound();
+        return "login";
 
     }
 

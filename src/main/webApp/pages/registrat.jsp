@@ -33,7 +33,7 @@
                         </div>
                         <div class="form-group">
                             <label for="email">Електронная почта</label>
-                            <input type="email" class="form-control" name="telNumber" id="email" placeholder="email"
+                            <input type="email" class="form-control" name="email" id="email" placeholder="email"
                                    required/>
                         </div>
                         <div class="form-group">
@@ -49,8 +49,10 @@
 
                             <p class="help-block"></p>
                         </div>
+                        <p>
                         <button type="submit" class="btn btn-success">Подтвердить регистрацию</button>
-                        <a href="<c:url value="/home"/>">На главную</a>
+                        <a href="<c:url value="/home"/>" class="btn btn-default" role="button">На главную</a>
+                        </p>
                     </form>
                 </div>
             </div>

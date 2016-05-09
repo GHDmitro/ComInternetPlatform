@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pac.daoInter.PositionOfPriceDAO;
+import pac.entities.Account;
 import pac.entities.PositionOfPrice;
+
+import java.util.List;
 
 /**
  * Created by macbookair on 18.04.16.
@@ -26,4 +29,10 @@ public class PositionOfPriceService {
     public PositionOfPrice findPosition(PositionOfPrice positionOfPrice){
         return positionOfPriceDAO.find(positionOfPrice);
     }
+
+    @Transactional
+    public List<PositionOfPrice> listPositions(Account account){
+        return positionOfPriceDAO.listPositions(account);
+    }
+
 }

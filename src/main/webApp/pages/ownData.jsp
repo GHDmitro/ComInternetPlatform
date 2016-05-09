@@ -44,9 +44,9 @@
                             <div class="row">
                                 <%--<div class="col-md- col-lg-">--%>
                                     <div class="thumbnail">
-                                        
+
                                         <c:if test="${refPhoto != null}">
-                                        <img src="<c:url value="/givePhoto/${refPhoto}"/> "   alt="...">
+                                        <img src="<c:url value="/givePhoto/${refPhoto}"/> "   >
                                         </c:if>
 
                                         <form enctype="multipart/form-data" action="<c:url value="/changeOwnData"/> "
@@ -55,17 +55,19 @@
                                                    <%--value="<sec:authentication property="principal.username"/>">--%>
 
                                             <div class="form-group-horizontal">
-                                                <label>Добавление фото</label><br>
-                                                <input type="file" name="photo" id="Photo" placeholder="Photo" >
+                                                <sec:authorize access="hasRole('customer')">
+                                                    <label>Добавление фото</label><br>
+                                                    <input type="file" name="photo" id="Photo" placeholder="Photo" >
                                                     <%--<label for="Photo">Загрузить фото</label>--%>
+                                                </sec:authorize>
                                                 <p class="help-block"></p>
                                             </div>
                                             <div class="caption">
                                                 <div class="row">
                                                     <div class="col-xs-5 col-xs-offset-1 ">
                                                         <ul class="text-center" >
-                                                            <li class="text-area"><h4>Електронная почта: ${email}</h4></li>
-                                                            <li class="text-area"><h4>Телефонный номер: ${telNumber}</h4></li>
+                                                            <li class="text-area"><h6>Електронная почта: <c:out value="${email}"/></h6></li>
+                                                            <li class="text-area"><h6>Телефонный номер: <c:out value="${telNumber}"/></h6></li>
                                                         </ul>
                                                     </div>
 
@@ -85,9 +87,17 @@
                                                 </div>
 
                                                 <p>
-                                                    <button type="submit" class="btn btn-success">Подтвердить</button>
-                                                    <a href="<c:url value="/home"/> " class="btn btn-default"
-                                                       role="button">На главную</a></p>
+                                                    <sec:authorize access="hasRole('customer')">
+                                                        <button type="submit" class="btn btn-success">Подтвердить</button>
+                                                        <a href="<c:url value="/home"/> " class="btn btn-default"
+                                                           role="button">На главную</a>
+                                                    </sec:authorize>
+                                                    <sec:authorize access="hasRole('client')">
+                                                        <a href="<c:url value="/home/${login}"/> " class="btn btn-default"
+                                                           role="button">На главную</a>
+                                                    </sec:authorize>
+
+                                                </p>
                                             </div>
                                         </form>
                                     </div>

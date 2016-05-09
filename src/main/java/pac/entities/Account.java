@@ -1,7 +1,6 @@
 package pac.entities;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class Account {
         this.login = login;
     }
 
-    @Transactional
+//    @Transactional
     public List<PositionOfPrice> getPricePositions() {
         return pricePositions;
     }

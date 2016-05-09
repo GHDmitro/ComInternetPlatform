@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pac.daoInter.AccountDAO;
 import pac.entities.Account;
+import pac.entities.AccountType;
 import pac.entities.PositionOfPrice;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public class AccountService {
     }
 
     @Transactional
-    public List<Account> listAccount(){
-        return accountDAO.list();
+    public List<Account> listAccount(AccountType accountType){
+        return accountDAO.list(accountType);
     }
 
     @Transactional
@@ -42,7 +43,7 @@ public class AccountService {
     public Account findAccount(String login){
         Account a =  accountDAO.findOne(login);
         if (a != null){
-            System.out.println(a.getLogin()+"     "+a.getPass());
+            System.out.println(a.getLogin()+"     "+a.getPass()+" "+a.getTelNumber()+"  "+a.getEmail());
             return a;
         }else
         return null;

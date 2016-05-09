@@ -40,6 +40,13 @@
           <div class="panel panel-default">
             <div class="panel-heading"><h4>Новый продукт</h4></div>
             <div class="panel-body">
+              <c:if test="${error != null}">
+                <div class="row">
+                  <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3">
+                    <h2 class="text-center"><c:out value="${error}"/></h2>
+                  </div>
+                </div>
+              </c:if>
               <form enctype="multipart/form-data" action="<c:url value="/addPricePosition"/> " method="post">
                 <%--<input class="login" type="hidden" name="login"  value="<sec:authentication property="principal.username"/>">--%>
                 <div class="form-group">
@@ -79,9 +86,12 @@
                   <input type="file" name="photo" id="Photo" placeholder="Photo" required>
                   <%--<label for="Photo">Загрузить фото</label>--%>
                   <p class="help-block"></p>
-                  <a href="<c:url value="/home"/>" style="align-content: center">На главную</a>
+
                 </div>
-                <button type="submit" class="btn btn-success">Добавить в прайс</button>
+                  <p>
+                    <button type="submit" class="btn btn-success">Добавить в прайс</button>
+                    <a href="<c:url value="/home"/>" class="btn btn-default" role="button">На главную</a>
+                  </p>
               </form>
             </div>
           </div>

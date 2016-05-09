@@ -3,6 +3,7 @@ package pac.daoImpl;
 import org.springframework.stereotype.Repository;
 import pac.daoInter.AccountDAO;
 import pac.entities.Account;
+import pac.entities.AccountType;
 import pac.entities.PositionOfPrice;
 
 import javax.persistence.EntityManager;
@@ -40,20 +41,26 @@ public class AccountDAOImpl implements AccountDAO {
         System.out.println("ищет в AccountDAOImpl " +login);
 //        Account account = entityManager.find(Account.class, login);
 //        account.getPricePositions().iterator();
-        return entityManager.find(Account.class, login);
+        Account account =  entityManager.find(Account.class, login);
+        System.out.println(account.getEmail()+" это был имейл "+account.getTelNumber()+" это был телефон");
+        return account;
     }
 
     @Override
-    public List<Account> list() {
-        Query query = entityManager.createQuery("select a from Account a ", Account.class);
+    public List<Account> list(AccountType accountType) {
+        Query query = entityManager.createQuery("select a from Account a where a.accountType =:accountType", Account.class);
+        query.setParameter("accountType", accountType);
         return (List<Account>)query.getResultList();
     }
 
     @Override
     public List<PositionOfPrice> listPositions(Account account) {
 //        List<PositionOfPrice> list = findOne(account.getLogin());
+        Query query = entityManager.createQuery("select p from PositionOfPrice p where p.account =:account_login");
+        query.setParameter("account_login", account);
+        List<PositionOfPrice> list = (List<PositionOfPrice>) query.getResultList();
 
-        return null;
+        return list;
     }
 
 //    @Override
