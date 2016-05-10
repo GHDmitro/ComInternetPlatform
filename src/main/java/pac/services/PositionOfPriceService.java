@@ -26,13 +26,15 @@ public class PositionOfPriceService {
         positionOfPriceDAO.delete(positionOfPrice);
     }
     @Transactional
-    public PositionOfPrice findPosition(PositionOfPrice positionOfPrice){
-        return positionOfPriceDAO.find(positionOfPrice);
+    public PositionOfPrice findPosition(Integer positionID){
+        return positionOfPriceDAO.find(positionID);
     }
 
     @Transactional
     public List<PositionOfPrice> listPositions(Account account){
         return positionOfPriceDAO.listPositions(account);
     }
+
+
 
 }

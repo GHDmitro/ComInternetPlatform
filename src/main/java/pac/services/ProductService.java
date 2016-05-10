@@ -29,4 +29,8 @@ public class ProductService {
     public Product findProduct(String productName, String codeOfModel, String refPhoto){
         return productDAO.find(productName,codeOfModel, refPhoto);
     }
+    @Transactional
+    public Product findProductByID(Integer id){
+        return productDAO.findByID(id);
+    }
 }

@@ -30,8 +30,8 @@ public class PositionOfPriceDAOImpl implements PositionOfPriceDAO {
     }
 
     @Override
-    public PositionOfPrice find(PositionOfPrice positionOfPrice) {
-        entityManager.find(positionOfPrice.getClass(), positionOfPrice.getId());
+    public PositionOfPrice find(Integer positionID) {
+        entityManager.find(PositionOfPrice.class, positionID);
         return null;
     }
 

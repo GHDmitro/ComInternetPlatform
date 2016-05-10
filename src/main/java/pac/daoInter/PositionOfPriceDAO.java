@@ -11,6 +11,6 @@ import java.util.List;
 public interface PositionOfPriceDAO {
     void add(PositionOfPrice positionOfPrice);
     void delete(PositionOfPrice positionOfPrice);
-    PositionOfPrice find(PositionOfPrice positionOfPrice);
+    PositionOfPrice find(Integer positionID);
     List<PositionOfPrice> listPositions(Account account);
 }

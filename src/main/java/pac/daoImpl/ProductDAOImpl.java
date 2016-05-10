@@ -57,4 +57,9 @@ public class ProductDAOImpl implements ProductDAO {
 //        return list.get(0);
         return ac;
     }
+
+    @Override
+    public Product findByID(Integer id) {
+        return entityManager.find(Product.class, id);
+    }
 }

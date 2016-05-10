@@ -417,6 +417,16 @@ public class MyController {
         } else return "login";
     }
 
+    @RequestMapping(value = "/changePosition/{positionID}")
+    public String changePosition(@PathVariable(value = "positionID") String positionID, Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+//        Account account = accountService.findAccount(login);
+        PositionOfPrice positionOfPrice = positionOfPriceService.findPosition(Integer.valueOf(positionID));
+        model.addAttribute("positionOfPrice", positionOfPrice);
+        return "customer";
+    }
+
     @RequestMapping(value = "/givePhoto/{refPhoto}")
     public ResponseEntity<byte[]> takePhoto(@PathVariable(value = "refPhoto") String refPhoto) {
         byte[] arr;

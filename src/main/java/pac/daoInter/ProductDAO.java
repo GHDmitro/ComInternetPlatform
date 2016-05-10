@@ -10,4 +10,5 @@ public interface ProductDAO {
     void delete(Product product);
     void update(Product product);
     Product find(String name, String codeOfModel, String refPhoto);
+    Product findByID(Integer id);
 }
