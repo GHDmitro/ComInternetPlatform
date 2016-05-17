@@ -26,8 +26,8 @@ public class Account {
     @Column(name = "state")
     private boolean state;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<PositionOfPrice> pricePositions = new ArrayList<PositionOfPrice>();
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<PositionOfPrice> pricePositions  = new ArrayList<PositionOfPrice>();
 
     @ManyToOne
     @JoinColumn(name = "accountType_typeName")
@@ -45,16 +45,19 @@ public class Account {
         this.login = login;
     }
 
-//    @Transactional
+
     public List<PositionOfPrice> getPricePositions() {
         return pricePositions;
     }
 
-    public void addPricePositions(PositionOfPrice position){
+    public void deletePricePosition(PositionOfPrice positionOfPrice){
+        if (pricePositions.contains(positionOfPrice)){
+            pricePositions.remove(positionOfPrice);
+        }
+    }
+
+    public void setPricePositions(PositionOfPrice position){
         pricePositions.add(position);
-//        if (position.getAccount() != this){
-//            position.setAccount(this);
-//        }
     }
 
     public AccountType getAccountType() {

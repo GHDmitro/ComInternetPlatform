@@ -9,7 +9,7 @@ import java.util.List;
  * Created by macbookair on 18.04.16.
  */
 public interface PositionOfPriceDAO {
-    void add(PositionOfPrice positionOfPrice);
+    void set(PositionOfPrice positionOfPrice);
     void delete(PositionOfPrice positionOfPrice);
     PositionOfPrice find(Integer positionID);
     List<PositionOfPrice> listPositions(Account account);

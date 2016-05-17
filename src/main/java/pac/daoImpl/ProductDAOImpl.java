@@ -16,17 +16,17 @@ public class ProductDAOImpl implements ProductDAO {
     private EntityManager entityManager;
 
 //    @Override
-//    public void add(Product product) {
+//    public void set(Product product) {
 //        entityManager.persist(product);
 //    }
 
     @Override
     public void delete(Product product) {
-        entityManager.remove(product);
+        entityManager.remove(entityManager.merge(product));
     }
 
     @Override
-    public void update(Product product) {
+    public void set(Product product) {
         entityManager.merge(product);
     }
 

@@ -128,19 +128,26 @@
             <div class="col-md-7 col-md-push-5">
                 <ul>
                     <%--Here will name of positioin from product--%>
-                    <li><h3 class="featurette-heading"><c:out value="${position.product.name}"/></h3></li>
+                    <li><h3 class="featurette-heading"><c:out value="Название:  ${position.product.name}"/></h3></li>
                         <%--Here will be code of position from product--%>
-                    <li><h4 class="text-muted"><c:out value="${position.product.codeOfModel}"/></h4></li>
+                    <li><h4 class="text-muted"><c:out value="Модель:  ${position.product.codeOfModel}"/></h4></li>
+
+                        <li><h4 class="text-muted"><c:out value="Цена:  ${position.cost}"/></h4></li>
+
                         <%--Here will be decription from position--%>
-                    <li><p class="lead"><c:out value="${position.product.description}"/></p></li>
+                    <li><p class="lead"><c:out value="Описание:   ${position.product.description}"/></p></li>
                         <sec:authorize access="hasRole('customer')">
-                         <li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button">Изменить &raquo;</a></p></li>
-                        <li><p><a class="btn btn-default" href="<c:url value="/deletePosition/${position.id}"/> " role="button">Удалить &raquo;</a></p></li>
+                            <li><p class="lead"><c:out value="Колличество:   ${position.product.amount}"/> </p> </li>
+                         <li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button" style="width: 110px">Изменить &raquo;</a></p></li>
+                        <li><p><a class="btn btn-default" href="<c:url value="/deletePosition/${position.id}"/> " role="button" style="width: 110px" >Удалить &raquo;</a></p></li>
                        </sec:authorize>
-                        <%--<sec:authorize access="hasRole('client')">--%>
-                            <%----%>
-                            <%--<li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button">Изменить &raquo;</a></p></li>--%>
-                        <%--</sec:authorize>--%>
+                        <sec:authorize access="hasRole('client')">
+                            <form action="<c:url value="/bookingPosition"/> " method="post">
+                                <input type="hidden" value="${position.id}">
+                                <input type="number" name="amount" style="width: 50px"/>
+                                <button type="submit" class="btn btn-success">Заказать</button>
+                            </form>
+                        </sec:authorize>
                     <%--<li><form action="<c:url value="/changePosition"/>" method="post">--%>
                         <%--&lt;%&ndash;<input type="hidden" name="">&ndash;%&gt;--%>
                     <%--</form> </li>--%>
@@ -160,7 +167,7 @@
                 <div class="panel-body">
                     <form action="#" method="post">
                         <label for="comment">Коментарий</label>
-                        <textarea class="form-control" id="comment" placeholder="Описание"></textarea>
+                        <textarea class="form-control" id="comment" placeholder="комментарий"></textarea>
                     </form>
                     <%--сюда подтягивается foreach--%>
                     <p>Все коменти</p>

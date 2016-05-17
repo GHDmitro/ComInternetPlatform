@@ -15,15 +15,15 @@ public class ProductService {
     private ProductDAO productDAO;
 
 //    public void addProduct(Product product){
-//        productDAO.add(product);
+//        productDAO.set(product);
 //    }
     @Transactional
     public void deleteProduct(Product product){
         productDAO.delete(product);
     }
     @Transactional
-    public void updateProduct(Product product){
-        productDAO.update(product);
+    public void setProduct(Product product){
+        productDAO.set(product);
     }
     @Transactional
     public Product findProduct(String productName, String codeOfModel, String refPhoto){

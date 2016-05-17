@@ -34,7 +34,7 @@ public class PositionOfPrice {
     @JoinColumn(name = "account_login")
     private Account account;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL )
     @JoinColumn(name = "product_id")
     private Product product;
 

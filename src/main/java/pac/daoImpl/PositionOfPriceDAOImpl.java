@@ -20,19 +20,20 @@ public class PositionOfPriceDAOImpl implements PositionOfPriceDAO {
     private EntityManager entityManager;
 
     @Override
-    public void add(PositionOfPrice positionOfPrice) {
+    public void set(PositionOfPrice positionOfPrice) {
         entityManager.merge(positionOfPrice);
-    }
+    }    ////////
 
     @Override
     public void delete(PositionOfPrice positionOfPrice) {
-        entityManager.remove(positionOfPrice);
+        entityManager.refresh(entityManager.merge(positionOfPrice));
+        entityManager.remove(entityManager.merge(positionOfPrice));
     }
 
     @Override
     public PositionOfPrice find(Integer positionID) {
-        entityManager.find(PositionOfPrice.class, positionID);
-        return null;
+
+        return entityManager.find(PositionOfPrice.class, positionID);
     }
 
     @Override

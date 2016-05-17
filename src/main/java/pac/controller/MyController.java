@@ -1,5 +1,6 @@
 package pac.controller;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,24 +52,7 @@ public class MyController {
 
     @RequestMapping("/")
     public String rootPage(Model model, HttpServletRequest request) {
-//        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//        System.out.println("in ///// "+userName);
-//
-//        Account account = accountService.findAccount(userName);
-//        if (account != null) {
-//            List<PositionOfPrice> listPositions = account.getPricePositions();
-//            if (listPositions != null) {
-//                System.out.println(listPositions.get(0).getProduct().getName());
-//
-//                model.addAttribute("listPosition", listPositions);
-//            }
-//            return "canvas";
-////            return new ModelAndView()
-//        }else {
-//        model.addAttribute("accounts", accountService.listAccount());
         return "login";
-//        }
     }
 
     @RequestMapping(value = "/home")
@@ -121,7 +105,6 @@ public class MyController {
                             "Описание товара", "defaultPhotoToScreen", "Код модели", 000000)));
                     list = list1;
                 }
-//                System.out.println(list.get(0).getProduct().getName() + "---------------------------");/\
                 model.addAttribute("listPositions", list);
                 model.addAttribute("login", login);
                 return "canvas";
@@ -169,65 +152,6 @@ public class MyController {
 //        model.addAttribute("error", )
         return "login";
     }
-
-//    @RequestMapping("/contact_add_page")
-//    pages.publ String contactAddPage(Model model) {
-//        model.addAttribute("groups", contactService.listGroups());
-//        return "contact_add_page";
-//    }
-//
-//    @RequestMapping("/group_add_page")
-//    pages.publ String groupAddPage() {
-//        return "group_add_page";
-//    }
-
-    //    @RequestMapping("/group/{id}")
-//    pages.publ String listGroup(@PathVariable(value = "id") long groupId, Model model) {
-//        Group group = (groupId != DEFAULT_GROUP_ID) ? contactService.findGroup(groupId) : null;
-//
-//        model.addAttribute("groups", contactService.listGroups());
-//        model.addAttribute("currentGroup", group);
-//        model.addAttribute("contacts", contactService.listContacts(group));
-//        return "index";
-//    }
-//
-//
-//
-//    @RequestMapping(value = "/search", method = RequestMethod.POST)
-//    pages.publ String search(@RequestParam String pattern, Model model) {
-//        model.addAttribute("groups", contactService.listGroups());
-//        model.addAttribute("contacts", contactService.searchContacts(pattern));
-//        return "index";
-//    }
-//
-//
-//    @RequestMapping(value = "/contact/delete", method = RequestMethod.POST)
-//    pages.publ String search(@RequestParam(value = "toDelete[]", required = false) long[] toDelete, Model model) {
-//        if (toDelete != null)
-//            contactService.deleteContact(toDelete);
-//
-//        model.addAttribute("groups", contactService.listGroups());
-//        model.addAttribute("contacts", contactService.listContacts(null));
-//        return "index";
-//    }
-//
-//    @RequestMapping(value="/contact/add", method = RequestMethod.POST)
-//    pages.publ String contactAdd(@RequestParam(value = "group") long groupId,
-//                             @RequestParam String name,
-//                             @RequestParam String surname,
-//                             @RequestParam String phone,
-//                             @RequestParam String email,
-//                             Model model)
-//    {
-//        Group group = (groupId != DEFAULT_GROUP_ID) ? contactService.findGroup(groupId) : null;
-//
-//        Contact contact = new Contact(group, name, surname, phone, email);
-//        contactService.addContact(contact);
-//
-//        model.addAttribute("groups", contactService.listGroups());
-//        model.addAttribute("contacts", contactService.listContacts(null));
-//        return "index";
-//    }
     @RequestMapping(value = "/addNewPosition", method = RequestMethod.GET)
     public String getNewPosition(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -251,7 +175,7 @@ public class MyController {
         String login = userDetail.getUsername();
         Account account = accountService.findAccount(login);
 
-        System.out.println("addPricePosition: "+account.getEmail()+"   "+account.getTelNumber());
+        System.out.println("addPricePosition: " + account.getEmail() + "   " + account.getTelNumber());
         String ref = codeOfModel + login;
 
         Product product = productService.findProduct(name, codeOfModel, ref);    //////////////////////////  вот тут
@@ -272,7 +196,6 @@ public class MyController {
                 product = new Product(name, description, ref, codeOfModel, capacity);
             } else product = new Product(name, description, "defaultPhotoToScreen", codeOfModel, capacity);
 
-//            productService.updateProduct(product);
         }
 
 
@@ -280,7 +203,7 @@ public class MyController {
 
         PositionOfPrice positionOfPrice = new PositionOfPrice(bookingCondition, deliveryCondition,
                 new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), cost, account, product);
-        positionOfPriceService.addPositionOfPrice(positionOfPrice);
+        positionOfPriceService.setPositionOfPrice(positionOfPrice);
 //            account.addPricePositions(positionOfPrice);   /////// проверить будет ли оно правильно работать добавле поз после ее создания
         System.out.println("-----------------");
 
@@ -352,7 +275,7 @@ public class MyController {
                     System.out.println("model.addAttribute(\"refPhoto\", \"defaultPhotoToScreen\");");
                 }
 
-                System.out.println("ownData: "+account.getEmail() +"    "+account.getTelNumber());
+                System.out.println("ownData: " + account.getEmail() + "    " + account.getTelNumber());
 
                 model.addAttribute("email", account.getEmail());
                 model.addAttribute("telNumber", account.getTelNumber());
@@ -370,7 +293,7 @@ public class MyController {
         String login = auth.getName();
         Account account = accountService.findAccount(login);
 
-        System.out.println(account.getLogin()+"  "+account.getPass()+"   "+account.getEmail()+"   "+account.getTelNumber());
+        System.out.println(account.getLogin() + "  " + account.getPass() + "   " + account.getEmail() + "   " + account.getTelNumber());
         if (account.getAccountType().getTypeName().equals("customer")) {
             if (!photo.isEmpty()) {
                 File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
@@ -390,13 +313,13 @@ public class MyController {
             }
             model.addAttribute("refPhoto", login);
 
-            if (email.length() == 0 ) {
+            if (email.length() == 0) {
                 model.addAttribute("email", account.getEmail());
                 System.out.println("changeOwnData: email by Account: " + account.getEmail());
 
             } else {
                 account.setEmail(email);
-                System.out.println("changeOwnData: email: "+email);
+                System.out.println("changeOwnData: email: " + email);
                 model.addAttribute("email", email);
             }
 
@@ -405,7 +328,7 @@ public class MyController {
                 System.out.println("changeOwnData: telNumber by Account: " + account.getTelNumber());
 
             } else {
-                System.out.println("changeOwnData: telNumber:"+telNumber);
+                System.out.println("changeOwnData: telNumber:" + telNumber);
                 account.setTelNumber(telNumber);
                 model.addAttribute("telNumber", telNumber);
             }
@@ -417,14 +340,126 @@ public class MyController {
         } else return "login";
     }
 
-    @RequestMapping(value = "/changePosition/{positionID}")
-    public String changePosition(@PathVariable(value = "positionID") String positionID, Model model){
+    @RequestMapping(value = "deletePosition/{positionID}", method = RequestMethod.GET)
+    public String deletePosition(@PathVariable(value = "positionID") Integer positionID, Model model){
+        PositionOfPrice positionOfPrice = positionOfPriceService.findPosition(positionID);
+
+        if (positionOfPrice != null){
+            Account account = positionOfPrice.getAccount();
+            String login = account.getLogin();
+            Product product = positionOfPrice.getProduct();
+            String refPhoto = product.getPhoto();
+
+//            List<PositionOfPrice> list = accountService.listPositions(account);
+            List<PositionOfPrice> list = account.getPricePositions();
+            if (!list.isEmpty()) {
+                System.out.println(list.get(0).getProduct().getName()+" --------- ");
+            }
+//
+//            productService.deleteProduct(product);
+            account.deletePricePosition(positionOfPrice);
+            accountService.updateAccount(account);
+
+            positionOfPriceService.deletePositionOfPrice(positionOfPrice);
+
+            File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto+ ".png");
+            if (file.exists()){
+                file.delete();
+            }
+            List<PositionOfPrice> listPosition = account.getPricePositions();
+            if (listPosition.size() == 0) {
+                List<PositionOfPrice> list1 = new LinkedList<>();
+                Calendar c = Calendar.getInstance();
+                list1.add(new PositionOfPrice("Здесь будет ваши условия заказа", "Здесь будут ваши условия доставки",
+                        new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), 000000, account, new Product("Название товара",
+                        "Описание товара", "defaultPhotoToScreen", "Код модели", 000000)));
+                listPosition = list1;
+            }
+            model.addAttribute("listPositions", listPosition);
+        }
+        return "canvas";
+    }
+
+    @RequestMapping(value = "/changePosition/{positionID}", method = RequestMethod.GET)
+    public String changePosition(@PathVariable(value = "positionID") Integer positionID, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
 //        Account account = accountService.findAccount(login);
-        PositionOfPrice positionOfPrice = positionOfPriceService.findPosition(Integer.valueOf(positionID));
-        model.addAttribute("positionOfPrice", positionOfPrice);
-        return "customer";
+        if(positionID != null ) {
+            PositionOfPrice positionOfPrice = positionOfPriceService.findPosition(positionID);
+            System.out.println(positionOfPrice.getId()+" -----  "+positionOfPrice.getCost()+" ----- "+positionOfPrice.getProduct().getName());
+            model.addAttribute("position", positionOfPrice);
+            return "changePage";
+        }return "canvas";
+    }
+
+    @RequestMapping(value = "/changePositionPost", method = RequestMethod.POST)
+    public String changePositionPost(@RequestParam String id, @RequestParam String name,
+                                     @RequestParam String codeOfModel, @RequestParam String description,
+                                     @RequestParam MultipartFile photo, @RequestParam String amount,
+                                     @RequestParam String cost, Model model) {
+        if (!id.isEmpty()){
+            System.out.println("id пустой");
+        }
+        PositionOfPrice positionOfPrice = positionOfPriceService.findPosition(Integer.valueOf(id));
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (positionOfPrice != null ) {
+            Account account = positionOfPrice.getAccount();
+            Product product = positionOfPrice.getProduct();
+            if (!name.isEmpty()) {
+                product.setName(name);
+            }
+            if (!codeOfModel.isEmpty()) {
+                String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + product.getPhoto()+ ".png";
+                product.setCodeOfModel(codeOfModel);
+                File source = new File(fileName);
+                if (source.exists()){
+                    String refPhoto = codeOfModel+account.getLogin();
+                    File dest = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
+                    try  {
+                        FileUtils.copyFile(source, dest);  //
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    source.delete();
+                    product.setPhoto(refPhoto);
+                }
+            }
+            if (!description.isEmpty()) {
+                product.setDescription(description);
+            }
+            if (!amount.isEmpty() && Integer.parseInt(amount) != product.getAmount()) {
+                product.setAmount(Integer.parseInt(amount));
+            }
+            if (!cost.isEmpty() && Double.parseDouble(cost) != positionOfPrice.getCost()) {
+                positionOfPrice.setCost(Double.parseDouble(cost));
+            }
+            if (!photo.isEmpty()) {
+
+                File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + product.getPhoto() + ".png");
+                if (file.exists()) {
+                    file.delete();
+                }
+                System.out.println("фотки нету но в IF вошел ---------------------------");
+                // существует
+                File file1 = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + product.getPhoto() + ".png");
+                try (FileOutputStream fileOut = new FileOutputStream(file1)) {
+                    fileOut.write(photo.getBytes());
+                    fileOut.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            productService.setProduct(product);
+            positionOfPriceService.setPositionOfPrice(positionOfPrice);
+
+            model.addAttribute("position", positionOfPrice);
+            return "changePage";
+
+        }else return "canvas";
+
     }
 
     @RequestMapping(value = "/givePhoto/{refPhoto}")
@@ -432,7 +467,7 @@ public class MyController {
         byte[] arr;
         try {
             File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
-            if (!file.exists()){
+            if (!file.exists()) {
                 file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/defaultPhotoToScreen.png");
             }
             FileInputStream reader = new FileInputStream(file);

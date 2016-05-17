@@ -18,8 +18,8 @@ public class PositionOfPriceService {
     private PositionOfPriceDAO positionOfPriceDAO;
 
     @Transactional
-    public void addPositionOfPrice(PositionOfPrice positionOfPrice){
-        positionOfPriceDAO.add(positionOfPrice);
+    public void setPositionOfPrice(PositionOfPrice positionOfPrice){
+        positionOfPriceDAO.set(positionOfPrice);
     }
     @Transactional
     public void deletePositionOfPrice(PositionOfPrice positionOfPrice){

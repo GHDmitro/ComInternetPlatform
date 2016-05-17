@@ -66,8 +66,8 @@
                                                 <div class="row">
                                                     <div class="col-xs-5 col-xs-offset-1 ">
                                                         <ul class="text-center" >
-                                                            <li class="text-area"><h6>Електронная почта: <c:out value="${email}"/></h6></li>
-                                                            <li class="text-area"><h6>Телефонный номер: <c:out value="${telNumber}"/></h6></li>
+                                                            <li class="text-area"><h5>Електронная почта: <c:out value="${email}"/></h5></li>
+                                                            <li class="text-area"><h5>Телефонный номер: <c:out value="${telNumber}"/></h5></li>
                                                         </ul>
                                                     </div>
 
