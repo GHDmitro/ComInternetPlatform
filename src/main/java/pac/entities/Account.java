@@ -1,6 +1,11 @@
 package pac.entities;
 
+
+
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +31,15 @@ public class Account {
     @Column(name = "state")
     private boolean state;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<PositionOfPrice> pricePositions  = new ArrayList<PositionOfPrice>();
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<PositionOfPrice> pricePositions  = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "accountType_typeName")
     private AccountType accountType;
+
+    @OneToMany(mappedBy = "accountCustomer" , fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Booking> bookingList = new ArrayList<>();
 
     public Account() {
 
@@ -45,18 +53,28 @@ public class Account {
         this.login = login;
     }
 
+    public void deleteBooking(Booking booking){
+        bookingList.remove(booking);
+    }
+    public void setBookingList(Booking booking){
+        bookingList.add(booking);
+    }
+
+    public List<Booking> getBookingList() {
+        return bookingList;
+    }
 
     public List<PositionOfPrice> getPricePositions() {
         return pricePositions;
     }
 
     public void deletePricePosition(PositionOfPrice positionOfPrice){
-        if (pricePositions.contains(positionOfPrice)){
+//        if (pricePositions.contains(positionOfPrice)){
             pricePositions.remove(positionOfPrice);
-        }
+//        }
     }
 
-    public void setPricePositions(PositionOfPrice position){
+    public void addPricePositions(PositionOfPrice position){
         pricePositions.add(position);
     }
 

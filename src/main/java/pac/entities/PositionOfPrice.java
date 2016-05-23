@@ -30,11 +30,11 @@ public class PositionOfPrice {
     @Column(name = "cost")
     private double cost;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "account_login")
     private Account account;
 
-    @ManyToOne(cascade = CascadeType.ALL )
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 

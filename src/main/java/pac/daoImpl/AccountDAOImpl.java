@@ -63,6 +63,13 @@ public class AccountDAOImpl implements AccountDAO {
         return list;
     }
 
+    @Override
+    public void deletePosition(PositionOfPrice positionOfPrice) {
+        Account account = positionOfPrice.getAccount();
+        account.deletePricePosition(positionOfPrice);
+        update(account);
+    }
+
 //    @Override
 //    public List<PositionOfPrice> listPositions(Account account) {
 //        Query query = entityManager.createQuery("select ")

@@ -26,7 +26,7 @@ public class PositionOfPriceDAOImpl implements PositionOfPriceDAO {
 
     @Override
     public void delete(PositionOfPrice positionOfPrice) {
-        entityManager.refresh(entityManager.merge(positionOfPrice));
+//        Query query = entityManager.createQuery("" +)
         entityManager.remove(entityManager.merge(positionOfPrice));
     }
 

@@ -203,14 +203,19 @@ public class MyController {
 
         PositionOfPrice positionOfPrice = new PositionOfPrice(bookingCondition, deliveryCondition,
                 new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), cost, account, product);
+        account.addPricePositions(positionOfPrice);
         positionOfPriceService.setPositionOfPrice(positionOfPrice);
+        accountService.updateAccount(account);
 //            account.addPricePositions(positionOfPrice);   /////// проверить будет ли оно правильно работать добавле поз после ее создания
         System.out.println("-----------------");
 
 //        accountService.updateAccount(account);
 //
 //        List<PositionOfPrice> listPosition = accountService.listPositions(account);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        List<PositionOfPrice> listPosition = positionOfPriceService.listPositions(account);
+//        List<PositionOfPrice> listPosition = positionOfPriceService.listPositions(account);
+
+        List<PositionOfPrice> listPosition = accountService.listPositions(account);
+
         if (listPosition.size() != 0) {
             model.addAttribute("listPositions", listPosition);
 //            System.out.println(listPosition.get(0).getProduct().getName() + "     если есть то в контроллере позиция ");
@@ -347,7 +352,9 @@ public class MyController {
         if (positionOfPrice != null){
             Account account = positionOfPrice.getAccount();
             String login = account.getLogin();
+
             Product product = positionOfPrice.getProduct();
+
             String refPhoto = product.getPhoto();
 
 //            List<PositionOfPrice> list = accountService.listPositions(account);
@@ -357,16 +364,39 @@ public class MyController {
             }
 //
 //            productService.deleteProduct(product);
-            account.deletePricePosition(positionOfPrice);
-            accountService.updateAccount(account);
+//            account.deletePricePosition(positionOfPrice);
+//            accountService.updateAccount(account);
 
-            positionOfPriceService.deletePositionOfPrice(positionOfPrice);
+//            positionOfPriceService.deletePositionOfPrice(positionOfPrice);
 
             File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto+ ".png");
             if (file.exists()){
                 file.delete();
             }
-            List<PositionOfPrice> listPosition = account.getPricePositions();
+//
+            Account account1 = accountService.findAccount(login);
+//            account1.deletePricePosition(positionOfPrice);
+            positionOfPriceService.deletePositionOfPrice(positionOfPrice);
+//            accountService.updateAccount(account1);
+
+            List<PositionOfPrice> list2 = account1.getPricePositions();
+            list2.forEach((e) -> {
+                System.out.println(e.getProduct().getName()+"     ");
+            });
+            list2.forEach((e) -> {
+                System.out.println(e.getProduct().getName() + "     ");
+            });
+
+
+//            account1.deletePricePosition(positionOfPrice);
+//            productService.deleteProduct(product);
+
+//            accountService.deletePosition(positionOfPrice);
+//            accountService.updateAccount(account1);
+
+//            positionOfPriceService.deletePositionOfPrice(positionOfPrice);
+
+            List<PositionOfPrice> listPosition = accountService.findAccount(account.getLogin()).getPricePositions();
             if (listPosition.size() == 0) {
                 List<PositionOfPrice> list1 = new LinkedList<>();
                 Calendar c = Calendar.getInstance();

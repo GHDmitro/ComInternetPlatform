@@ -95,14 +95,12 @@
 
         <div class="row row-offcanvas row-offcanvas-right">
 
-            <div class="col-xs-12 col-sm-9">
+            <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
                 <p class="pull-right visible-xs">
                     <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
                 </p>
                 <!-- <div class="page-header"> -->
-                <img class="page-header" style="margin-top : 0" src="<c:url value="/pages/images/header.jpg"/> "
-                     <%--pages/images/header.jpg--%>
-                     height="250" width="1000">
+                <img class="page-header" style="margin-top : 0" src="<c:url value="/pages/images/header.jpg"/> " height="250" width="1000">
                 <!--  <h1>Hello, world!</h1>
                  <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p> -->
                 <!-- </div> -->
@@ -136,6 +134,13 @@
 
                         <%--Here will be decription from position--%>
                     <li><p class="lead"><c:out value="Описание:   ${position.product.description}"/></p></li>
+                        <c:if test="${position.bookingCondition != null}">
+                            <li><p class="lead"> <c:out value="Уточнения для заказов:   ${position.bookingCondition}"/> </p></li>
+                        </c:if>
+                        <c:if test="${position.deliveryCondition != null}">
+                            <li><p class="lead"> <c:out value="Уточнение для доставки:   ${position.deliveryCondition}"/></p></li>
+                        </c:if>
+
                         <sec:authorize access="hasRole('customer')">
                             <li><p class="lead"><c:out value="Колличество:   ${position.product.amount}"/> </p> </li>
                          <li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button" style="width: 110px">Изменить &raquo;</a></p></li>
@@ -148,6 +153,7 @@
                                 <button type="submit" class="btn btn-success">Заказать</button>
                             </form>
                         </sec:authorize>
+
                     <%--<li><form action="<c:url value="/changePosition"/>" method="post">--%>
                         <%--&lt;%&ndash;<input type="hidden" name="">&ndash;%&gt;--%>
                     <%--</form> </li>--%>
@@ -166,8 +172,7 @@
             <div class="panel panel-center">
                 <div class="panel-body">
                     <form action="#" method="post">
-                        <label for="comment">Коментарий</label>
-                        <textarea class="form-control" id="comment" placeholder="комментарий"></textarea>
+                        <textarea class="form-control" placeholder="комментарий"></textarea>
                     </form>
                     <%--сюда подтягивается foreach--%>
                     <p>Все коменти</p>

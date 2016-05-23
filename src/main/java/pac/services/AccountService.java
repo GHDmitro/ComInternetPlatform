@@ -53,6 +53,11 @@ public class AccountService {
         return accountDAO.listPositions(account);
     }
 
+    @Transactional
+    public void deletePosition(PositionOfPrice positionOfPrice){
+        accountDAO.deletePosition(positionOfPrice);
+    }
+
 
 
 

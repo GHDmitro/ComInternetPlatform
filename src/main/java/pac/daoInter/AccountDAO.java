@@ -16,4 +16,5 @@ public interface AccountDAO {
     Account findOne(String login);
     List<Account> list(AccountType accountType);
     List<PositionOfPrice> listPositions(Account account);
+    void deletePosition(PositionOfPrice positionOfPrice);
 }
