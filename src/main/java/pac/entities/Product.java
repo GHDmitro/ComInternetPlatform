@@ -25,6 +25,10 @@ public class Product {
     @Column(name = "amount")
     private int amount;
 
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+//    @JoinColumn(name = "positionOfPrice_ID")
+//    private PositionOfPrice positionOfPrice;
+
     public Product() {
     }
 

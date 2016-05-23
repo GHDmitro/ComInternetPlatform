@@ -64,7 +64,7 @@
                     <%--<li class="active"><a href="#">Прайс лист</a></li>--%>
                     <sec:authorize access="hasRole('customer')">
                     <li><a href="<c:url value="/addNewPosition"/> ">Добавить позицию</a></li>
-                    <li><a href="<c:url value="/booking"/> ">Заказы</a></li>
+                    <li><a href="<c:url value="/bookingPage"/> ">Заказы</a></li>
                         <li><a href="<c:url value="/ownData"/> ">Личные данные пользователя</a></li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('client')">

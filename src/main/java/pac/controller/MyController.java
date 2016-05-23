@@ -17,15 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import pac.entities.Account;
-import pac.entities.AccountType;
-import pac.entities.PositionOfPrice;
-import pac.entities.Product;
+import pac.entities.*;
 import pac.errors.PhotoNotFoundException;
-import pac.services.AccountService;
-import pac.services.AccountTypeService;
-import pac.services.PositionOfPriceService;
-import pac.services.ProductService;
+import pac.services.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -47,6 +41,10 @@ public class MyController {
     private ProductService productService;
     @Autowired
     private PositionOfPriceService positionOfPriceService;
+    @Autowired
+    private BookingService bookingService;
+    @Autowired
+    private BookingPositionService bookingPositionService;
 
 //    private ContactService contactService;
 
@@ -541,4 +539,61 @@ public class MyController {
     }
 
 
+    @RequestMapping(value = "/bookingPage", method = RequestMethod.GET)
+    public String booking(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String login = auth.getName();
+        Account customer = accountService.findAccount(login);
+        if (customer != null){
+            List<Booking> list = bookingService.bookingList(customer);
+            model.addAttribute("bookingList", list );
+            return "bookingPage";
+        }else {
+            return "login";
+        }
+
+    }
+
+    @RequestMapping(value = "/confirmBooking", method = RequestMethod.POST)
+    public String confirmBooking(@RequestParam Integer positionID, @RequestParam Integer capacity, Model model){
+        BookingPosition position = bookingPositionService.findByID(positionID);
+        Product product = position.getProduct();
+        Account customer = position.getBooking().getAccountCustomer();
+        int amount = product.getAmount();
+        int posCapacity = position.getCapacity();
+        if (amount >= capacity){
+            amount -= capacity;
+            product.setAmount(amount);
+            productService.setProduct(product);
+            if (posCapacity <= capacity){
+                bookingPositionService.deleteBookingPosition(position);
+            }else {
+                position.setCapacity(posCapacity - capacity);
+                bookingPositionService.setBookingPosition(position);
+            }
+        }else {
+            capacity -= amount;
+            productService.deleteProduct(product);
+            position.setCapacity(capacity);
+            bookingPositionService.setBookingPosition(position);
+        }
+
+        List<Booking> list = bookingService.bookingList(customer);
+        model.addAttribute("bookingList", list );
+
+        return "bookingPage";
+
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
+
