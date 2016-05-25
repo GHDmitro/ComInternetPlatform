@@ -55,6 +55,8 @@
         <ul class="nav navbar-nav navbar-right">
             <%--<li><p class="text"><sec:authentication property="principal.username"/></p></li>--%>
             <li><a href="<c:url value="/home"/>">На главную</a></li>
+
+              <li><a href="<c:url value="/deleteAllBooking"/>">Удалить все</a></li>
           <!-- <li><a href="#">Войти</a></li> -->
         </ul>
       </div>
@@ -62,7 +64,7 @@
     </div>
     <!-- /.container -->
   </nav>
-  <c:if test="${bookingList != null}">
+  <c:if test="${bookingList == null}">
     <h4 class="text-center">Заказов пока что нет</h4>
   </c:if>
   <c:forEach items="${bookingList}" var="booking">
@@ -76,26 +78,26 @@
         <div class="col-md-7 col-md-push-5">
           <c:forEach items="${booking.bookingPositions}" var="bookingPosition">
 
-          <ul>
+
               <%--Here will name of positioin from product--%>
-            <li>
+
               <ul>
                 <li style="list-style-type: none"><h3 class="featurette-heading">Название продукта: <c:out value="${bookingPosition.product.name}"/></h3></li>
                 <li style="list-style-type: none"><h4 class="text-muted" >Модель продукта: <c:out value="${bookingPosition.product.codeOfModel}"/></h4></li>
                 <li style="list-style-type: none"><h4 class="text-muted">Количество в заказе: <c:out value="${bookingPosition.capacity}"/></h4></li>
                 <li style="list-style-type: none ">
                   <form action="<c:url value="/confirmBooking"/>" method="post">
-                    <input type="hidden" value="${bookingPosition.id}">
+                    <input type="hidden" name="positionID" value="${bookingPosition.id}">
                      <input type="number" name="capacity" style="width: 50px" value="${bookingPosition.capacity}"/>
                     <button type="submit" class="btn btn-success">Подтвердить продажу</button>
                   </form>
                 </li>
               </ul>
-            </li>
+
               <%--Here will be code of position from product--%>
               <%--Here will be decription from position--%>
 
-          </ul><br><br>
+          <br><br>
 
           <%--<p class="text-center">--%>
             <%--<a href="<c:url value="/home"/>" class="btn btn-default" role="button">На главную</a>--%>
@@ -104,7 +106,7 @@
         </div>
 
         <div class="col-md-5 col-md-pull-7">
-          <img class="featurette-image img-responsive center-block" height="250" width="250" src="<c:url value="/givePhoto/${booking.accountClient.photo}"/> "
+          <img class="featurette-image img-responsive center-block" height="250" width="250" src="<c:url value="/givePhoto/${booking.accountClient.login}"/> "
                alt="Изображение загружается"><br><br>
           <ul>
             <li><p class="lead">Email  : <c:out value="${booking.accountClient.email}"/></p></li>

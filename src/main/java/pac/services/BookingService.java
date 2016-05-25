@@ -19,9 +19,16 @@ public class BookingService {
     @Autowired
     private BookingDAO bookingDAO;
 
+
     @Transactional
-    public void setBooking(Booking booking){
+    public void save(Booking booking){
+        bookingDAO.save(booking);
+    }
+
+    @Transactional
+    public void updateBooking(Booking booking){
         if (booking != null){
+            System.out.println("Сохраняет booking в базу");
             bookingDAO.set(booking);
         }else {
             System.out.println("Заказ в null в BookingService");
@@ -38,6 +45,11 @@ public class BookingService {
     }
 
     @Transactional
+    public void deleteAllBooking(Account customer){
+        bookingDAO.deleteAll(customer);
+    }
+
+    @Transactional
     public Booking findBooking(Integer bookingID){
         return bookingDAO.find(bookingID);
     }
@@ -45,6 +57,11 @@ public class BookingService {
     @Transactional
     public List<Booking> bookingList(Account accountCustomer){
         return bookingDAO.bookingList(accountCustomer);
+    }
+
+    @Transactional
+    public Booking findForClient(Account client, Account customer){
+        return bookingDAO.findForClient(client,customer);
     }
 
 

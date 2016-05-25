@@ -21,25 +21,27 @@ public class Booking {
     @JoinColumn(name = "account_client")
     private Account accountClient;
 
-    @ManyToOne
+    @ManyToOne  //
     @JoinColumn(name = "account_customer")
     private Account accountCustomer;
 
-    @OneToMany(mappedBy = "booking", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "booking", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookingPosition> bookingPositions = new ArrayList<>();
 
     public Booking() {
     }
 
-    public Booking(Account accountClient, Account accountCustomer, List<BookingPosition> bookingPositions) {
+    public Booking(Account accountClient, Account accountCustomer) {
         this.accountClient = accountClient;
         this.accountCustomer = accountCustomer;
-        this.bookingPositions = bookingPositions;
+
     }
 
 
     public void addBookingPosition(BookingPosition bookingPosition){
-        bookingPositions.add(bookingPosition);
+        if (!bookingPositions.contains(bookingPosition)) {
+            bookingPositions.add(bookingPosition);
+        }
     }
 
     public void deleteBookingPosition(BookingPosition bookingPosition){

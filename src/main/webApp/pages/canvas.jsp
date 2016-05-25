@@ -148,8 +148,8 @@
                        </sec:authorize>
                         <sec:authorize access="hasRole('client')">
                             <form action="<c:url value="/bookingPosition"/> " method="post">
-                                <input type="hidden" value="${position.id}">
-                                <input type="number" name="amount" style="width: 50px"/>
+                                <input type="hidden" name="positionID" value="${position.id}"/>
+                                <input type="number" name="capacity" style="width: 50px"/>
                                 <button type="submit" class="btn btn-success">Заказать</button>
                             </form>
                         </sec:authorize>

@@ -31,14 +31,14 @@ public class Account {
     @Column(name = "state")
     private boolean state;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PositionOfPrice> pricePositions  = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "accountType_typeName")
     private AccountType accountType;
 
-    @OneToMany(mappedBy = "accountCustomer" , fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "accountCustomer", fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookingList = new ArrayList<>();
 
     public Account() {
@@ -56,7 +56,10 @@ public class Account {
     public void deleteBooking(Booking booking){
         bookingList.remove(booking);
     }
-    public void setBookingList(Booking booking){
+    public void deleteAllBooking(){
+        bookingList.clear();
+    }
+    public void addBookingList(Booking booking){
         bookingList.add(booking);
     }
 

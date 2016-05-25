@@ -28,7 +28,7 @@ public class BookingPosition {
     public BookingPosition() {
     }
 
-    public BookingPosition(int capacity, Booking booking, Product product) {
+    public BookingPosition(int capacity, Booking booking ,Product product) {
         this.capacity = capacity;
         this.booking = booking;
         this.product = product;
