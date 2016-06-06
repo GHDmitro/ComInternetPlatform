@@ -52,6 +52,13 @@ public class PositionOfPrice {
         this.cost = cost;
     }
 
+    @Override
+    public int hashCode(){
+        int id = this.id * 11 * 13 * 23 ;
+        int two = 2 << 31;
+        return two -id;
+    }
+
     public Account getAccount() {
         return account;
     }

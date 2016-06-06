@@ -1,8 +1,8 @@
 package pac.entities;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by macbookair on 23.05.16.
@@ -21,26 +21,44 @@ public class Booking {
     @JoinColumn(name = "account_client")
     private Account accountClient;
 
-    @ManyToOne  //
-    @JoinColumn(name = "account_customer")
+    @ManyToOne
+    @JoinColumn(name = "account_customer",  updatable = true, insertable = true) // это было изменено птница nullable = false,
     private Account accountCustomer;
 
     @OneToMany(mappedBy = "booking", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookingPosition> bookingPositions = new ArrayList<>();
+    private Set<BookingPosition> bookingPositions = new HashSet<>();
+//    private List<BookingPosition> bookingPositions = new ArrayList<>();
 
     public Booking() {
     }
 
-    public Booking(Account accountClient, Account accountCustomer) {
+    public Booking(Account accountClient, Account accountCustomer) { //, Account accountCustomer
         this.accountClient = accountClient;
         this.accountCustomer = accountCustomer;
 
+    }
+
+    @Override
+    public int hashCode(){
+        int logInt = id;
+        int hashCode = logInt  * 13 * 11 ;
+        int two32 = 2 << 31 ;
+        return  two32 - hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
 
     public void addBookingPosition(BookingPosition bookingPosition){
         if (!bookingPositions.contains(bookingPosition)) {
             bookingPositions.add(bookingPosition);
+            if (bookingPosition.getBooking() != null){
+                bookingPosition.getBooking().getBookingPositions().remove(bookingPosition);
+            }
+            bookingPosition.setBooking(this);
         }
     }
 
@@ -72,11 +90,11 @@ public class Booking {
         this.accountCustomer = accountCustomer;
     }
 
-    public List<BookingPosition> getBookingPositions() {
+    public Set<BookingPosition> getBookingPositions() {
         return bookingPositions;
     }
 
-    public void setBookingPositions(List<BookingPosition> bookingPositions) {
+    public void setBookingPositions(Set<BookingPosition> bookingPositions) {
         this.bookingPositions = bookingPositions;
     }
 }

@@ -3,6 +3,7 @@ package pac.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -21,6 +22,8 @@ import pac.services.UserDetailsServiceImpl;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.nio.charset.Charset;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan("pac")
@@ -60,13 +63,17 @@ public class AppConfig extends WebMvcConfigurerAdapter{
     }
 
     @Bean
-    public DataSource dataSource()
-    {
+    public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         ds.setUrl("jdbc:mysql://localhost:3307/dbComIntPlat");
         ds.setUsername("root");
         ds.setPassword("root");
+//        Map<String, String>
+        Properties properties = new Properties();
+        properties.setProperty("useUnicode", "true");
+        properties.setProperty("characterEncoding", "UTF-8");
+        ds.setConnectionProperties(properties);
 
         return ds;
     }
@@ -80,6 +87,11 @@ public class AppConfig extends WebMvcConfigurerAdapter{
         resolver.setViewClass(JstlView.class);
         resolver.setOrder(1);
         return resolver;
+    }
+
+    @Bean
+    public StringHttpMessageConverter stringHttpMessageConverter(){
+        return new StringHttpMessageConverter(Charset.forName("UTF-8"));
     }
 
     @Bean

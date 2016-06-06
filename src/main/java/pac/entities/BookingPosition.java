@@ -17,8 +17,8 @@ public class BookingPosition {
     @Column(name = "capacity")
     private int capacity;
 
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
+    @ManyToOne()
+    @JoinColumn(name = "booking_id",  updatable = true, insertable = true) // это было изменено птница nullable = false,
     private Booking booking;
 
     @ManyToOne
@@ -28,7 +28,20 @@ public class BookingPosition {
     public BookingPosition() {
     }
 
-    public BookingPosition(int capacity, Booking booking ,Product product) {
+    @Override
+    public int hashCode(){
+        int logInt = id;
+        int hashCode = logInt  * 13 * 11 ;
+        int two32 = 2 << 31 ;
+        return  two32 - hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    public BookingPosition(int capacity,Booking booking, Product product) { //Booking booking ,
         this.capacity = capacity;
         this.booking = booking;
         this.product = product;

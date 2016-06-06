@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
@@ -64,15 +64,19 @@
                 <!-- <a class="active" href="#">Прайс лист</a> -->
             </div>
             <div id="navbar" class="collapse navbar-collapse">
-                    <%--<ul class="nav navbar-nav">--%>
-                    <%--<li class="active"><a href="#">Прайс лист</a></li>--%>
-                    <%--<li><a href="<c:url value="/getNewPosition"/> ">Добавить позицию</a></li>--%>
-                    <%--<li><a href="<c:url value="/booking"/> ">Заказы</a></li>--%>
-                    <%--<li><a href="<c:url value="/ownData"/> ">Личные данные пользователя</a></li>--%>
-                    <%--</ul>--%>
+                <ul class="nav navbar-nav">
+                        <%--<li class="active"><a href="#">Прайс лист</a></li>--%>
+                    <sec:authorize access="hasRole('client')">
+                        <li><a href="<c:url value="/ownData"/> ">Мои личные данные</a></li>
+                    </sec:authorize>
+
+                </ul>
                 <ul class="nav navbar-nav navbar-right">
 
                         <%--<li><p class="text"><sec:authentication property="principal.username"/></p></li>--%>
+                    <sec:authorize access="hasRole('client')">
+                        <li><a href="<c:url value="/home"/> ">К списку продавцов</a></li>
+                    </sec:authorize>
                     <li><a href="<c:url value="/logout"/>">Вийти</a></li>
                     <!-- <li><a href="#">Войти</a></li> -->
                 </ul>
@@ -81,6 +85,38 @@
         </div>
         <!-- /.container -->
     </nav>
+
+
+    <%--<nav class="navbar navbar-fixed-top navbar-inverse">--%>
+        <%--<div class="container">--%>
+            <%--<div class="navbar-header">--%>
+                <%--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"--%>
+                        <%--aria-expanded="false" aria-controls="navbar">--%>
+                    <%--<span class="sr-only">Toggle navigation</span>--%>
+                    <%--<span class="icon-bar"></span>--%>
+                    <%--<span class="icon-bar"></span>--%>
+                    <%--<span class="icon-bar"></span>--%>
+                <%--</button>--%>
+                <%--<!-- <a class="active" href="#">Прайс лист</a> -->--%>
+            <%--</div>--%>
+            <%--<div id="navbar" class="collapse navbar-collapse">--%>
+                    <%--&lt;%&ndash;<ul class="nav navbar-nav">&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<li class="active"><a href="#">Прайс лист</a></li>&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<li><a href="<c:url value="/getNewPosition"/> ">Добавить позицию</a></li>&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<li><a href="<c:url value="/booking"/> ">Заказы</a></li>&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<li><a href="<c:url value="/ownData"/> ">Личные данные пользователя</a></li>&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;</ul>&ndash;%&gt;--%>
+                <%--<ul class="nav navbar-nav navbar-right">--%>
+
+                        <%--&lt;%&ndash;<li><p class="text"><sec:authentication property="principal.username"/></p></li>&ndash;%&gt;--%>
+                    <%--<li><a href="<c:url value="/logout"/>">Вийти</a></li>--%>
+                    <%--<!-- <li><a href="#">Войти</a></li> -->--%>
+                <%--</ul>--%>
+            <%--</div>--%>
+            <%--<!-- /.nav-collapse -->--%>
+        <%--</div>--%>
+        <%--<!-- /.container -->--%>
+    <%--</nav>--%>
     <!-- /.navbar -->
 
 

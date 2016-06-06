@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
@@ -92,7 +92,6 @@
     <%--<option value="${account.login}">Name: ${account.login} , User age: ${account.pass}</option>--%>
 
     <div class="container">
-
         <div class="row row-offcanvas row-offcanvas-right">
 
             <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
@@ -100,7 +99,7 @@
                     <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
                 </p>
                 <!-- <div class="page-header"> -->
-                <img class="page-header" style="margin-top : 0" src="<c:url value="/pages/images/header.jpg"/> " height="250" width="1000">
+                <img class="page-header" style="margin-top : 0" src="<c:url value="/pages/images/header.jpg"/> " height="250" width="1150">
                 <!--  <h1>Hello, world!</h1>
                  <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p> -->
                 <!-- </div> -->
@@ -140,12 +139,14 @@
                         <c:if test="${position.deliveryCondition != null}">
                             <li><p class="lead"> <c:out value="Уточнение для доставки:   ${position.deliveryCondition}"/></p></li>
                         </c:if>
-
+                        <c:if test="${position.id != 0}">
                         <sec:authorize access="hasRole('customer')">
-                            <li><p class="lead"><c:out value="Колличество:   ${position.product.amount}"/> </p> </li>
-                         <li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button" style="width: 110px">Изменить &raquo;</a></p></li>
-                        <li><p><a class="btn btn-default" href="<c:url value="/deletePosition/${position.id}"/> " role="button" style="width: 110px" >Удалить &raquo;</a></p></li>
-                       </sec:authorize>
+
+                                <li><p class="lead"><c:out value="Колличество:   ${position.product.amount}"/> </p> </li>
+                                <li><p><a class="btn btn-default" href="<c:url value="/changePosition/${position.id}"/> " role="button" style="width: 110px">Изменить &raquo;</a></p></li>
+                                <li><p><a class="btn btn-default" href="<c:url value="/deletePosition/${position.id}"/> " role="button" style="width: 110px" >Удалить &raquo;</a></p></li>
+
+                        </sec:authorize>
                         <sec:authorize access="hasRole('client')">
                             <form action="<c:url value="/bookingPosition"/> " method="post">
                                 <input type="hidden" name="positionID" value="${position.id}"/>
@@ -153,7 +154,7 @@
                                 <button type="submit" class="btn btn-success">Заказать</button>
                             </form>
                         </sec:authorize>
-
+                        </c:if>
                     <%--<li><form action="<c:url value="/changePosition"/>" method="post">--%>
                         <%--&lt;%&ndash;<input type="hidden" name="">&ndash;%&gt;--%>
                     <%--</form> </li>--%>
@@ -165,19 +166,19 @@
 
             </div>
             <div class="col-md-5 col-md-pull-7">
-                <img class="featurette-image img-responsive center-block" src="<c:url value="/givePhoto/${position.product.photo}"/> "
+                <img class="featurette-image img-responsive center-block" width="350" height="350" src="<c:url value="/givePhoto/${position.product.photo}"/> "
                      alt="Изображение загружается">
 
             </div><br>
-            <div class="panel panel-center">
-                <div class="panel-body">
-                    <form action="#" method="post">
-                        <textarea class="form-control" placeholder="комментарий"></textarea>
-                    </form>
-                    <%--сюда подтягивается foreach--%>
-                    <p>Все коменти</p>
-                </div>
-            </div>
+            <%--<div class="panel panel-center">--%>
+                <%--<div class="panel-body">--%>
+                    <%--<form action="#" method="post">--%>
+                        <%--<textarea class="form-control" placeholder="комментарий"></textarea>--%>
+                    <%--</form>--%>
+                    <%--&lt;%&ndash;сюда подтягивается foreach&ndash;%&gt;--%>
+                    <%--<p>Все коменти</p>--%>
+                <%--</div>--%>
+            <%--</div>--%>
 
         </div>
 

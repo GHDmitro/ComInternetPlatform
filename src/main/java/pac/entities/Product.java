@@ -1,8 +1,6 @@
 package pac.entities;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by macbookair on 28.03.16.
@@ -26,8 +24,8 @@ public class Product {
     private String codeOfModel;
     @Column(name = "amount")
     private int amount;
-    @OneToMany(mappedBy = "product")
-    private Set<PositionOfPrice> positions = new HashSet<>();
+//    @OneToMany(mappedBy = "product")
+//    private Set<PositionOfPrice> positions = new HashSet<>();
 
     public Product() {
     }
@@ -41,14 +39,14 @@ public class Product {
         this.amount = amount;
     }
 
-    public Set<PositionOfPrice> getPositions() {
-        return positions;
-    }
+//    public Set<PositionOfPrice> getPositions() {
+//        return positions;
+//    }
 
 
-    public void setPositions(Set<PositionOfPrice> positions) {
-        this.positions = positions;
-    }
+//    public void setPositions(Set<PositionOfPrice> positions) {
+//        this.positions = positions;
+//    }
 
     public int getAmount() {
         return amount;

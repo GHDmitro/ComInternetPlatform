@@ -20,13 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 import pac.entities.*;
 import pac.errors.PhotoNotFoundException;
 import pac.services.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/")
@@ -267,7 +265,8 @@ public class MyController {
         if (!(auth instanceof AnonymousAuthenticationToken)) {
             String login = auth.getName();
             Account account = accountService.findAccount(login);
-            if (account.getAccountType().getTypeName().equals("customer")) {
+            System.out.println(account.getAccountType().getTypeName());
+            if (account.getAccountType().getTypeName().equals("customer") | account.getAccountType().getTypeName().equals("client")) {
                 String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png";
                 if ((new File(fileName)).exists()) {
                     // существует
@@ -298,7 +297,7 @@ public class MyController {
         Account account = accountService.findAccount(login);
 
         System.out.println(account.getLogin() + "  " + account.getPass() + "   " + account.getEmail() + "   " + account.getTelNumber());
-        if (account.getAccountType().getTypeName().equals("customer")) {
+        if (account.getAccountType().getTypeName().equals("customer") | account.getAccountType().getTypeName().equals("client")) {
             if (!photo.isEmpty()) {
                 File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
                 if (file.exists()) {
@@ -353,10 +352,10 @@ public class MyController {
             Product product = positionOfPrice.getProduct();
             String refPhoto = product.getPhoto();
 
-            List<PositionOfPrice> list = account.getPricePositions();
-            if (!list.isEmpty()) {
-                System.out.println(list.get(0).getProduct().getName() + " --------- ");
-            }
+//            List<PositionOfPrice> list = account.getPricePositions();
+//            if (!list.isEmpty()) {
+//                System.out.println(list.get(0).getProduct().getName() + " --------- ");
+//            }
 
             File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
             if (file.exists()) {
@@ -368,16 +367,16 @@ public class MyController {
             accountService.updateAccount(account);
 
 
-            List<PositionOfPrice> listPosition = accountService.findAccount(account.getLogin()).getPricePositions();
-            if (listPosition.size() == 0) {
-                List<PositionOfPrice> list1 = new LinkedList<>();
+            Set<PositionOfPrice> setPositions = accountService.findAccount(account.getLogin()).getPricePositions();
+            if (setPositions.size() == 0) {
+                Set<PositionOfPrice> set = new HashSet<>();
                 Calendar c = Calendar.getInstance();
-                list1.add(new PositionOfPrice("Здесь будет ваши условия заказа", "Здесь будут ваши условия доставки",
+                set.add(new PositionOfPrice("Здесь будет ваши условия заказа", "Здесь будут ваши условия доставки",
                         new Date(c.YEAR, c.MONTH, c.DAY_OF_MONTH), 000000, account, new Product("Название товара",
                         "Описание товара", "defaultPhotoToScreen", "Код модели", 000000)));
-                listPosition = list1;
+                setPositions = set;
             }
-            model.addAttribute("listPositions", listPosition);
+            model.addAttribute("listPositions", setPositions);
         }
         return "canvas";
     }
@@ -520,16 +519,28 @@ public class MyController {
         String login = auth.getName();
         Account customer = accountService.findAccount(login);
         if (customer != null) {
-//            List<Booking> list = bookingService.bookingList(customer);
-            List<Booking> list = accountService.findAccount(customer.getLogin()).getBookingList();
-            if (list.size() != 0) {
-                List<BookingPosition> list1 = (List<BookingPosition>) bookingPositionService.positionsByBooking(list.get(0));
-                System.out.println("Длинна листа позиций "+list1.size());
-                System.out.println("Длинна листа " + list.size());
+//            List<Booking> list4 = bookingService.bookingList(customer);
+//            List<Booking> list = accountService.findAccount(customer.getLogin()).getBookingSet();
+            Set<Booking> set = customer.getBookingSet();
+            List<Booking> list = new ArrayList<>(set);
 
-                System.out.println("Длинна листа позиций " + list.get(0).getBookingPositions().size());
+//            System.out.println(list4.size()+" list from booking  ");
+//            System.out.println(list.size()+"  list from customer ");
+//            if (list.size() != 0) {
+//                List<BookingPosition> list1 = (List<BookingPosition>) bookingPositionService.positionsByBooking(list.get(0));
+//                System.out.println("Длинна листа позиций " + list1.size());
+//                System.out.println("Длинна листа " + list.size());
+//
+//                System.out.println("Длинна листа позиций " + list.get(0).getBookingPositions().size());
+//                List<BookingPosition> listB = list.get(0).getBookingPositions();
+//                System.out.println("ID 1:  "+ listB.get(0).getId()+";     ID 2: "+listB.get(1).getId());
+//            }
+            if (list.size()>0){
+
+                model.addAttribute("bookingList", list);
+            }else {
+                model.addAttribute("bookingList", null);
             }
-            model.addAttribute("bookingList", list);
             return "bookingPage";
         } else {
             return "login";
@@ -540,40 +551,75 @@ public class MyController {
     @RequestMapping(value = "/confirmBooking", method = RequestMethod.POST)
     public String confirmBooking(@RequestParam String positionID, @RequestParam Integer capacity, Model model) {
         BookingPosition bookingPosition = bookingPositionService.findByID(Integer.valueOf(positionID));
-        Product product = bookingPosition.getProduct();
         Account customer = bookingPosition.getBooking().getAccountCustomer();
         Booking booking = bookingPosition.getBooking();
-        int amount = product.getAmount();
         int posCapacity = bookingPosition.getCapacity();
-        if (amount >= capacity) {
-            amount -= capacity;
-            product.setAmount(amount);
-            productService.setProduct(product);
-            if (posCapacity <= capacity) {
-                bookingPositionService.deleteBookingPosition(bookingPosition);
-//                booking.deleteBookingPosition(bookingPosition);
-            } else {
+        Product product = bookingPosition.getProduct();
+
+        if (product != null && product.getId() != 0) {
+            System.out.println("не нал");
+            int amount = product.getAmount();
+            if (amount >= capacity && capacity >= 0) {
+                amount -= capacity;
+                product.setAmount(amount);
+                productService.setProduct(product);
+                if (posCapacity <= capacity) {
+//                bookingPositionService.deleteBookingPosition(bookingPosition);
+                    booking.deleteBookingPosition(bookingPosition);
+                    bookingService.updateBooking(booking);
+
+                    if (booking.getBookingPositions() == null || booking.getBookingPositions().size() == 0){
+                        customer.deleteBooking(booking);
+                        accountService.updateAccount(customer);
+
+                    }else {
+                        System.out.println(booking.getBookingPositions().size() +"  лист не обновился");
+                    }
+                } else {
+                    bookingPosition.setCapacity(posCapacity - capacity);
+                    bookingPositionService.setBookingPosition(bookingPosition);
+                }
+//                if (amount == 0) {
+////                product.setPositions(new HashSet<>());
+//                    productService.setProduct(product); //
+//                }
+            } else if (capacity >= 0) {
+                capacity -= amount;
+                product.setAmount(0);
+//            product.setPositions(new HashSet<>());
+                productService.setProduct(product);
+//            productService.deleteProduct(product);
+                bookingPosition.setCapacity(capacity);
+                bookingPositionService.setBookingPosition(bookingPosition);
+            }
+        }else {
+            if (capacity >= posCapacity ) {
+                System.out.println("тут 1");
+                booking.deleteBookingPosition(bookingPosition);
+                bookingService.updateBooking(booking);
+
+                if (booking.getBookingPositions() == null || booking.getBookingPositions().size() == 0){
+                    customer.deleteBooking(booking);
+                    accountService.updateAccount(customer);
+                }
+
+            }else if (capacity >= 0){
+                System.out.println("тут 2");
                 bookingPosition.setCapacity(posCapacity - capacity);
                 bookingPositionService.setBookingPosition(bookingPosition);
             }
-            if (amount == 0){
-                product.setPositions(new HashSet<>());
-                productService.setProduct(product); //
-            }
-        } else {
-            capacity -= amount;
-            productService.deleteProduct(product);
-            bookingPosition.setCapacity(capacity);
-            bookingPositionService.setBookingPosition(bookingPosition);
         }
+
+
 //        bookingService.updateBooking(booking); //
 //        accountService.updateAccount(customer);
 
 
-        List<Booking> list = accountService.findAccount(customer.getLogin()).getBookingList();
-        if (list.size() != 0) {
-            System.out.println(list.size() + "   " + list.get(0).getBookingPositions().size());
-        }
+        Set<Booking> set = accountService.findAccount(customer.getLogin()).getBookingSet();
+        List<Booking> list = new ArrayList<>(set);
+//        if (list.size() != 0) {
+//            System.out.println(list.size() + "   " + list.get(0).getBookingPositions().size());
+//        }
         model.addAttribute("bookingList", list);
         model.addAttribute("login", customer.getLogin());
 
@@ -594,20 +640,23 @@ public class MyController {
 
         Booking booking = bookingService.findForClient(client, customer);
         if (booking == null) {
-            booking = new Booking(client, customer);
+            booking = new Booking(client, customer); //, customer
+            bookingService.save(booking);
             System.out.println(booking.getId() + " это ID заказа ");
-            BookingPosition bookingPosition = new BookingPosition(capacity, booking ,product);
-            booking.addBookingPosition(bookingPosition);
-            customer.addBookingList(booking);
+            BookingPosition bookingPosition = new BookingPosition(capacity, booking,product); //, booking
+            bookingPositionService.setBookingPosition(bookingPosition);
+//            booking.addBookingPosition(bookingPosition);
+//            customer.addBookingList(booking);
             accountService.updateAccount(customer);
-        }else {
+        } else {
             System.out.println(booking.getId() + " это ID заказа else");
-            BookingPosition bookingPosition = new BookingPosition(capacity, booking ,product);
-            booking.addBookingPosition(bookingPosition);
+            BookingPosition bookingPosition = new BookingPosition(capacity, booking,product); // booking ,
+            bookingPositionService.setBookingPosition(bookingPosition);
+//            booking.addBookingPosition(bookingPosition);
             bookingService.updateBooking(booking);
         }
 
-            //не надо сохранять т к оно сохраняется при создании позции
+        //не надо сохранять т к оно сохраняется при создании позции
 
 //        if (booking == null){
 //            booking = new Booking(client, customer);
@@ -629,7 +678,6 @@ public class MyController {
 //        }
 
 
-
         List<PositionOfPrice> listPositions = accountService.listPositions(customer);
         model.addAttribute("listPositions", listPositions);
         model.addAttribute("login", customer.getLogin());
@@ -640,7 +688,7 @@ public class MyController {
 
 
     @RequestMapping(value = "/deleteAllBooking", method = RequestMethod.GET)
-    public String deleteAllBooking(Model model){
+    public String deleteAllBooking(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String login = auth.getName();
         Account account = accountService.findAccount(login);
@@ -650,6 +698,9 @@ public class MyController {
         model.addAttribute("login", login);
         return "bookingPage";
     }
+
+
+
 
 
 }

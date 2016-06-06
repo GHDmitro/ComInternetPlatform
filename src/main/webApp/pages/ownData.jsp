@@ -5,7 +5,7 @@
   Time: 19:43
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -55,7 +55,7 @@
                                                    <%--value="<sec:authentication property="principal.username"/>">--%>
 
                                             <div class="form-group-horizontal">
-                                                <sec:authorize access="hasRole('customer')">
+                                                <sec:authorize access="hasAnyRole('customer' , 'client')">
                                                     <label>Добавление фото</label><br>
                                                     <input type="file" name="photo" id="Photo" placeholder="Photo" >
                                                     <%--<label for="Photo">Загрузить фото</label>--%>
@@ -71,7 +71,7 @@
                                                         </ul>
                                                     </div>
 
-                                                    <sec:authorize access="hasRole('customer')">
+                                                    <sec:authorize access="hasAnyRole('customer' , 'client')">
                                                         <div class="col-xs-5 col-xs-offset-1 ">
                                                             <div class="form-group">
                                                                 <label for="email">Изменить електронную почту</label>
@@ -87,14 +87,23 @@
                                                 </div>
 
                                                 <p>
-                                                    <sec:authorize access="hasRole('customer')">
+                                                    <sec:authorize access="hasAnyRole('customer' , 'client')">
                                                         <button type="submit" class="btn btn-success">Подтвердить</button>
+                                                    </sec:authorize>
+                                                    <sec:authorize access="hasRole('customer')">
                                                         <a href="<c:url value="/home"/> " class="btn btn-default"
                                                            role="button">На главную</a>
                                                     </sec:authorize>
                                                     <sec:authorize access="hasRole('client')">
+                                                        <c:if test="${login != null}">
                                                         <a href="<c:url value="/home/${login}"/> " class="btn btn-default"
                                                            role="button">На главную</a>
+                                                        </c:if>
+                                                        <c:if test="${login == null}">
+                                                            <a href="<c:url value="/home"/> " class="btn btn-default"
+                                                               role="button">На главную</a>
+                                                        </c:if>
+
                                                     </sec:authorize>
 
                                                 </p>
