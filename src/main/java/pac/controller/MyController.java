@@ -43,6 +43,7 @@ public class MyController {
     private BookingService bookingService;
     @Autowired
     private BookingPositionService bookingPositionService;
+    private String pathToImg = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/";
 
 //    private ContactService contactService;
 
@@ -183,7 +184,7 @@ public class MyController {
             return "customer";
         } else {
             if (!photo.isEmpty()) {
-                File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + ref + ".png");
+                File file = new File(pathToImg + ref + ".png");
                 try (FileOutputStream fileOut = new FileOutputStream(file)) {
                     fileOut.write(photo.getBytes());
                     fileOut.flush();
@@ -239,7 +240,7 @@ public class MyController {
             Account account1 = accountService.findAccount(userName);
             Account account = accountService.findAccount(login);
             if (account != null && account.getAccountType().getTypeName().equals("customer") && account1.getAccountType().getTypeName().equals("client")) {
-                String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png";
+                String fileName = pathToImg + login + ".png";
                 if ((new File(fileName)).exists()) {
                     // существует
                     model.addAttribute("refPhoto", login);
@@ -267,7 +268,7 @@ public class MyController {
             Account account = accountService.findAccount(login);
             System.out.println(account.getAccountType().getTypeName());
             if (account.getAccountType().getTypeName().equals("customer") | account.getAccountType().getTypeName().equals("client")) {
-                String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png";
+                String fileName = pathToImg + login + ".png";
                 if ((new File(fileName)).exists()) {
                     // существует
                     model.addAttribute("refPhoto", login);
@@ -299,14 +300,14 @@ public class MyController {
         System.out.println(account.getLogin() + "  " + account.getPass() + "   " + account.getEmail() + "   " + account.getTelNumber());
         if (account.getAccountType().getTypeName().equals("customer") | account.getAccountType().getTypeName().equals("client")) {
             if (!photo.isEmpty()) {
-                File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
+                File file = new File(pathToImg + login + ".png");
                 if (file.exists()) {
                     file.delete();
                 }
                 System.out.println("фотки нету но в IF вошел ---------------------------");
                 // существует
 
-                File file1 = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + login + ".png");
+                File file1 = new File(pathToImg + login + ".png");
                 try (FileOutputStream fileOut = new FileOutputStream(file1)) {
                     fileOut.write(photo.getBytes());
                     fileOut.flush();
@@ -357,7 +358,7 @@ public class MyController {
 //                System.out.println(list.get(0).getProduct().getName() + " --------- ");
 //            }
 
-            File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
+            File file = new File(pathToImg + refPhoto + ".png");
             if (file.exists()) {
                 file.delete();
             }
@@ -412,12 +413,12 @@ public class MyController {
                 product.setName(name);
             }
             if (!codeOfModel.isEmpty()) {
-                String fileName = "/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + product.getPhoto() + ".png";
+                String fileName = pathToImg + product.getPhoto() + ".png";
                 product.setCodeOfModel(codeOfModel);
                 File source = new File(fileName);
                 if (source.exists()) {
                     String refPhoto = codeOfModel + account.getLogin();
-                    File dest = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
+                    File dest = new File(pathToImg + refPhoto + ".png");
                     try {
                         FileUtils.copyFile(source, dest);  //
                     } catch (IOException e) {
@@ -438,13 +439,13 @@ public class MyController {
             }
             if (!photo.isEmpty()) {
 
-                File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + product.getPhoto() + ".png");
+                File file = new File(pathToImg + product.getPhoto() + ".png");
                 if (file.exists()) {
                     file.delete();
                 }
                 System.out.println("фотки нету но в IF вошел ---------------------------");
                 // существует
-                File file1 = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + product.getPhoto() + ".png");
+                File file1 = new File(pathToImg + product.getPhoto() + ".png");
                 try (FileOutputStream fileOut = new FileOutputStream(file1)) {
                     fileOut.write(photo.getBytes());
                     fileOut.flush();
@@ -468,9 +469,9 @@ public class MyController {
     public ResponseEntity<byte[]> takePhoto(@PathVariable(value = "refPhoto") String refPhoto) {
         byte[] arr;
         try {
-            File file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/" + refPhoto + ".png");
+            File file = new File(pathToImg + refPhoto + ".png");
             if (!file.exists()) {
-                file = new File("/Users/macbookair/IdeaProjects/ComInternetPlatform/src/main/resources/defaultPhotoToScreen.png");
+                file = new File(pathToImg+"defaultPhotoToScreen.png");
             }
             FileInputStream reader = new FileInputStream(file);
             BufferedInputStream inputStream = new BufferedInputStream(reader);
