@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="war" name="ComInternetPlatform:war">
-    <output-path>$PROJECT_DIR$/out/artifacts/ComInternetPlatform_war</output-path>
-    <root id="archive" name="ComInternetPlatform_war.war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="platformId-1.0-SNAPSHOT.war">
       <element id="artifact" artifact-name="ComInternetPlatform:war exploded" />
     </root>
   </artifact>

@@ -184,6 +184,7 @@ public class MyController {
             return "customer";
         } else {
             if (!photo.isEmpty()) {
+
                 File file = new File(pathToImg + ref + ".png");
                 try (FileOutputStream fileOut = new FileOutputStream(file)) {
                     fileOut.write(photo.getBytes());
@@ -192,6 +193,7 @@ public class MyController {
                     e.printStackTrace();
                 }
                 product = new Product(name, description, ref, codeOfModel, capacity);
+
             } else product = new Product(name, description, "defaultPhotoToScreen", codeOfModel, capacity);
 
         }

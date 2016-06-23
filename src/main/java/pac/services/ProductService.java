@@ -22,6 +22,10 @@ public class ProductService {
         productDAO.delete(product);
     }
     @Transactional
+    public void saveProduct(Product product){
+        productDAO.save(product);
+    }
+    @Transactional
     public void setProduct(Product product){
         productDAO.set(product);
     }

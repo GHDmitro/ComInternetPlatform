@@ -7,11 +7,52 @@ body {
   overflow-x: hidden; /* Prevent scroll on narrow devices */
 }
 body {
-  padding-top: 70px;
+  padding-top: 0px;
 }
 footer {
   padding: 30px 0;
 }
+
+#navBarhead{
+  background-position: top;
+  margin: 0;
+}
+#photoCont{
+  background-position: top;
+  margin: auto;
+  /*height: ;*/
+  /*width: auto;*/
+  /*width: auto;*/
+  /*align-content: center;*/
+
+}
+.row-offcanvas #left-right-side {
+  margin-top: 10px;
+  background-color: #888888;
+}
+#pageHeader1{
+  margin-left: auto;
+  margin-right: auto;
+  background-position: top;
+  /*align-content: center;*/
+  /*height: auto;*/
+  /*width: auto;*/
+  max-height: 315px;
+  height: auto;
+  width: auto;
+}
+/*#pageHeader2{*/
+  /*margin-top: 0;*/
+  /*align-content: center;*/
+  /*height: 200px;*/
+  /*width: 970px;*/
+/*}*/
+/*#pageHeader3{*/
+  /*align-content: center;*/
+  /*height: 100px;*/
+  /*width: auto;*/
+/*}*/
+
 
 /*
  * Off Canvas

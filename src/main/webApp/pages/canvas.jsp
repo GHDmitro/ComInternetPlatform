@@ -36,18 +36,10 @@
 </head>
 
 <body>
-<sec:authorize access="!isAuthenticated()">
-
-    <p class="text-center">
-        <ul>
-            <li><h2>Вы не зарегистрированны, попробуйте ввести пароль снова либо зарегистрируйтесь!</h2></li>
-            <li><a class="btn btn-lg btn-success" href="<c:url value="/login"/>" role="button">Войти</a></li>
-        </ul>
-    </p>
-
-</sec:authorize>
 <sec:authorize access="isAuthenticated()">
-    <nav class="navbar navbar-fixed-top navbar-inverse">
+    <nav class="navbar navbar-inverse navbar-static-top " id="navBarhead">
+        <img  id="pageHeader1" src="<c:url value="/pages/images/header2.jpg"/> ">
+
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -70,10 +62,8 @@
                     <sec:authorize access="hasRole('client')">
                         <li><a href="<c:url value="/ownData/${login}"/> ">Личные данные пользователя</a></li>
                     </sec:authorize>
-
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-
                     <%--<li><p class="text"><sec:authentication property="principal.username"/></p></li>--%>
                         <sec:authorize access="hasRole('client')">
                             <li><a href="<c:url value="/home"/> ">К списку продавцов</a></li>
@@ -85,52 +75,55 @@
             <!-- /.nav-collapse -->
         </div>
         <!-- /.container -->
-    </nav>
-    <!-- /.navbar -->
-
-
-    <%--<option value="${account.login}">Name: ${account.login} , User age: ${account.pass}</option>--%>
-
-    <div class="container">
-        <div class="row row-offcanvas row-offcanvas-right">
-
-            <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
-                <p class="pull-right visible-xs">
-                    <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-                </p>
-                <!-- <div class="page-header"> -->
-                <img class="page-header" style="margin-top : 0" src="<c:url value="/pages/images/header.jpg"/> " height="250" width="1150">
-                <!--  <h1>Hello, world!</h1>
-                 <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p> -->
-                <!-- </div> -->
-                <!--           <div class="row">
-                            <div class="col-xs-6 col-lg-4">
-                              <h2>Heading</h2>
-                              <div class="col-md-5">
-                              <img class="featurette-image img-responsive center-block" src="img/header.jpg.jpg" height="960" width="1280" alt="Изображение загружается">
-                              </div>
-                              <! <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                            </div> -->
-            </div>
-        </div>
-    </div>
+    </nav> <br>
+    <%--<div class="container" >--%>
+        <%--<div class="row " id="photoCont">--%>
+            <%--&lt;%&ndash;row-offcanvas row-offcanvas-right&ndash;%&gt;--%>
+            <%--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >--%>
+                <%--&lt;%&ndash;<p class="pull-right visible-xs">&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;</p>&ndash;%&gt;--%>
+                <%--<!-- <div class="page-header"> -->--%>
+                <%--&lt;%&ndash;<img class="page-header" id="pageHeader1" src="<c:url value="/pages/images/header.jpg"/> " >&ndash;%&gt;--%>
+                <%--<!--  <h1>Hello, world!</h1>--%>
+                 <%--<p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p> -->--%>
+                <%--<!-- </div> -->--%>
+                <%--<!--           <div class="row">--%>
+                            <%--<div class="col-xs-6 col-lg-4">--%>
+                              <%--<h2>Heading</h2>--%>
+                              <%--<div class="col-md-5">--%>
+                              <%--<img class="featurette-image img-responsive center-block" src="img/header.jpg.jpg" height="960" width="1280" alt="Изображение загружается">--%>
+                              <%--</div>--%>
+                              <%--<! <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>--%>
+                            <%--</div> -->--%>
+            <%--</div>--%>
+            <%--&lt;%&ndash;<div class="col-md-12">&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<img class="page-header" id="pageHeader2" src="<c:url value="/pages/images/header.jpg"/> ">&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</div>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;<div class="col-xs-12">&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<img class="page-header" id="pageHeader3" src="<c:url value="/pages/images/header.jpg"/> ">&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</div>&ndash;%&gt;--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <c:forEach items="${listPositions}" var="position">
-
     <div class="container marketing">
+        <%--<hr class="featurette-divider">--%>
+        <div class="row featurette" id="left-right-side">
+            <div class="col-lg-1"></div>
+
+            <div class="col-xs-12 col-sm-6 col-md-6 col-md-7 col-lg-5">
+                <img class="featurette-image img-responsive center-block" width="350" height="350" src="<c:url value="/givePhoto/${position.product.photo}"/> "
+                     alt="Изображение загружается">
+            </div>
 
 
-        <hr class="featurette-divider">
-
-        <div class="row featurette">
-            <div class="col-md-7 col-md-push-5">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-md-5 col-lg-5" >
                 <ul>
                     <%--Here will name of positioin from product--%>
                     <li><h3 class="featurette-heading"><c:out value="Название:  ${position.product.name}"/></h3></li>
                         <%--Here will be code of position from product--%>
                     <li><h4 class="text-muted"><c:out value="Модель:  ${position.product.codeOfModel}"/></h4></li>
-
                         <li><h4 class="text-muted"><c:out value="Цена:  ${position.cost}"/></h4></li>
-
                         <%--Here will be decription from position--%>
                     <li><p class="lead"><c:out value="Описание:   ${position.product.description}"/></p></li>
                         <c:if test="${position.bookingCondition != null}">
@@ -158,18 +151,14 @@
                     <%--<li><form action="<c:url value="/changePosition"/>" method="post">--%>
                         <%--&lt;%&ndash;<input type="hidden" name="">&ndash;%&gt;--%>
                     <%--</form> </li>--%>
-
                     <%--<li><form action="<c:url value="/deletePosition"/>" method="post">--%>
                         <%--<input type="hidden" name="positionId" value="${}">--%>
                     <%--</form>  </li>--%>
                 </ul>
-
             </div>
-            <div class="col-md-5 col-md-pull-7">
-                <img class="featurette-image img-responsive center-block" width="350" height="350" src="<c:url value="/givePhoto/${position.product.photo}"/> "
-                     alt="Изображение загружается">
+            <div class="col-lg-1"></div>
 
-            </div><br>
+            <br>
             <%--<div class="panel panel-center">--%>
                 <%--<div class="panel-body">--%>
                     <%--<form action="#" method="post">--%>
@@ -195,10 +184,7 @@
         </div> -->
 
         <hr class="featurette-divider">
-
         <!-- /END THE FEATURETTES -->
-
-
         <!-- FOOTER -->
         <footer>
             <p class="pull-right"><a href="#">Back to top</a></p>
@@ -207,8 +193,15 @@
     </div>
     </c:forEach>
 </sec:authorize>
+<sec:authorize access="!isAuthenticated()">
+    <p class="text-center">
+    <ul>
+        <li><h2>Вы не зарегистрированны, попробуйте ввести пароль снова либо зарегистрируйтесь!</h2></li>
+        <li><a class="btn btn-lg btn-success" href="<c:url value="/login"/>" role="button">Войти</a></li>
+    </ul>
+    </p>
+</sec:authorize>
 <!-- </div> --><!-- /.container -->
-
 
 <!-- Bootstrap core JavaScript
 ================================================== -->

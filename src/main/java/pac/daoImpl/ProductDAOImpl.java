@@ -21,6 +21,11 @@ public class ProductDAOImpl implements ProductDAO {
 //    }
 
     @Override
+    public void save(Product product) {
+        entityManager.persist(product);
+    }
+
+    @Override
     public void delete(Product product) {
         entityManager.remove(entityManager.merge(product));
     }
