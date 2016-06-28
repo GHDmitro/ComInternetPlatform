@@ -41,7 +41,7 @@ public class BookingPositionDAOImpl implements BookingPositionDAO{
         if (list != null){
             return list;
         }else {
-            System.out.println("Лист bookingPosition пустой в BookingPositionDAOImpl");
+
             return null;
         }
     }

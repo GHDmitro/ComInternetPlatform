@@ -37,12 +37,10 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Account findOne(String login) {
-        //либо getReference если нужно будет только ссылка на него,а не его контент
-        System.out.println("ищет в AccountDAOImpl " +login);
+
 //        Account account = entityManager.find(Account.class, login);
 //        account.getPricePositions().iterator();
         Account account =  entityManager.find(Account.class, login);
-        System.out.println(account.getEmail()+" это был имейл "+account.getTelNumber()+" это был телефон");
         return account;
     }
 

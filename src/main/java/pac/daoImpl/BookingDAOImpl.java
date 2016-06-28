@@ -49,7 +49,7 @@ public class BookingDAOImpl implements BookingDAO {
         if (list != null) {
             return list;
         } else {
-            System.out.println("Лист booking пустой в BookingDAOImpl");
+
             return null;
         }
     }
