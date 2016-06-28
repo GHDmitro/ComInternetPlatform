@@ -17,6 +17,10 @@ footer {
   background-position: top;
   margin: 0;
 }
+#carousel{
+  margin-top: 0;
+  margin-bottom: 0;
+}
 #photoCont{
   background-position: top;
   margin: auto;

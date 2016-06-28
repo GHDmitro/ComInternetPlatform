@@ -88,7 +88,7 @@
                 <li style="list-style-type: none ">
                   <form action="<c:url value="/confirmBooking"/>" method="post">
                     <input type="hidden" name="positionID" value="${bookingPosition.id}">
-                     <input type="number" name="capacity" style="width: 50px" value="${bookingPosition.capacity}"/>
+                     <input type="number" required min="0" name="capacity" style="width: 50px" value="${bookingPosition.capacity}"/>
                     <button type="submit" class="btn btn-success">Подтвердить продажу</button>
                   </form>
                 </li>

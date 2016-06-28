@@ -38,8 +38,6 @@
 <body>
 <sec:authorize access="isAuthenticated()">
     <nav class="navbar navbar-inverse navbar-static-top " id="navBarhead">
-        <img  id="pageHeader1" src="<c:url value="/pages/images/header2.jpg"/> ">
-
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -75,7 +73,11 @@
             <!-- /.nav-collapse -->
         </div>
         <!-- /.container -->
-    </nav> <br>
+    </nav>
+    <div class="carousel slide" id="carousel">
+        <img  id="pageHeader1" src="<c:url value="/pages/images/header1.jpg"/> ">
+        <!-- индикаторы слайдов -->
+    </div>
     <%--<div class="container" >--%>
         <%--<div class="row " id="photoCont">--%>
             <%--&lt;%&ndash;row-offcanvas row-offcanvas-right&ndash;%&gt;--%>
@@ -143,7 +145,7 @@
                         <sec:authorize access="hasRole('client')">
                             <form action="<c:url value="/bookingPosition"/> " method="post">
                                 <input type="hidden" name="positionID" value="${position.id}"/>
-                                <input type="number" name="capacity" style="width: 50px"/>
+                                <input type="number" min="1" required name="capacity" style="width: 50px"/>
                                 <button type="submit" class="btn btn-success">Заказать</button>
                             </form>
                         </sec:authorize>
