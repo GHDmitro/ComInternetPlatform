@@ -56,7 +56,7 @@ public class AppConfig extends WebMvcConfigurerAdapter{
     {
         HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setShowSql(true);
-        adapter.setGenerateDdl(false);
+        adapter.setGenerateDdl(true);
         adapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
 
         return adapter;
@@ -66,9 +66,10 @@ public class AppConfig extends WebMvcConfigurerAdapter{
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://localhost:3307/dbComIntPlat");
-        ds.setUsername("root");
-        ds.setPassword("root");
+        ds.setUrl("jdbc:mysql://127.8.16.2:3306/springeap6quickstartwar");
+//        ds.setUrl("jdbc:mysql://localhost:3307/dbComIntPlat");
+        ds.setUsername("adminKyhtzer");
+        ds.setPassword("eBrbz1TXG9-e");
 //        Map<String, String>
         Properties properties = new Properties();
         properties.setProperty("useUnicode", "true");
